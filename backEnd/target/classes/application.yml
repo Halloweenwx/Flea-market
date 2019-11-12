@@ -1,0 +1,21 @@
+#thymeleaf
+spring:
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache:
+      false
+  devtools:
+    restart:
+      enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+#dabtabase
+  datasource:
+#    https://www.jianshu.com/p/7e9247c0b81a
+    url: jdbc:mysql://101.200.150.13:3306/flea?maxPoolSize=256&serverTimezone=Asia/Shanghai
+    username: tet
+    password: mysqltet

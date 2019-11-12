@@ -1,20 +1,18 @@
-package com.tet.fleamarket;
+package com.tet.fleamarket.dao;
 
-import com.tet.fleamarket.dao.UserDao;
 import com.tet.fleamarket.entity.User;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
+import static org.junit.Assert.*;
+
+/**
+ * @author Hou Weiying
+ * @date 2019-11-12 16:15
+ */
 @SpringBootTest
-public class FleamarketApplicationTests {
-
-    @Test
-    public void contextLoads() {
-    }
+public class UserDaoTest {
     @Autowired
     public UserDao userDao;
     @Test
