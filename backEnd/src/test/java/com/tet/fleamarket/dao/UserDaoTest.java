@@ -18,7 +18,7 @@ public class UserDaoTest {
     @Test
     public void add(){
         User user = new User();
-        user.setId("big");
+        user.setUid("big");
         System.out.println(userDao.save(user));
         System.out.println(userDao.findById("big"));
     }

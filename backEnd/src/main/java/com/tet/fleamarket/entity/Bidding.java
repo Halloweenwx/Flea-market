@@ -7,41 +7,28 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Set;
 
 /**
  * @author Hou Weiying
- * @date 2019-10-22 19:14
+ * @date 2019-11-26 14:33
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "User")
-public class User {
+public class Bidding {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(length = 32, unique = true)
-    private String uid;
-    @Column(length = 32)
-    private String username;
-    @Column(length = 32)
-    private String password;
-    @Column(length = 32)
-    private String salt;
-    private String realName;
-    @Column(length = 11)
-    private String phone;
+    private String bid;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumns({@JoinColumn(name="bidder", referencedColumnName="uid")})
+    private User bidder;
+    private Double biddingPrice;
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP")
-    private Timestamp registerTime;
-    @Column(columnDefinition = "timestamp")
-    @ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Timestamp modifiedTime;
-
+    private Timestamp createTime;
 }

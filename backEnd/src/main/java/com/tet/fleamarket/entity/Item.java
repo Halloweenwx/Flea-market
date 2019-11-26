@@ -7,9 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -21,27 +19,30 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "User")
-public class User {
+public class Item {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(length = 32, unique = true)
-    private String uid;
-    @Column(length = 32)
-    private String username;
-    @Column(length = 32)
-    private String password;
-    @Column(length = 32)
-    private String salt;
-    private String realName;
-    @Column(length = 11)
-    private String phone;
+    private String iid;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumns({@JoinColumn(name="belong", referencedColumnName="uid")})
+    private User belong;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumns({@JoinColumn(name="category", referencedColumnName="enCategory")})
+    private Category category;
+    private String name;
+    private String description;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumns({@JoinColumn(name="status", referencedColumnName="enStatus")})
+    private ItemStatus itemStatus;
+    @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "iid"))
+    private Set<String> pictureUrl;
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP")
-    private Timestamp registerTime;
+    private Timestamp createTime;
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp modifiedTime;
-
 }

@@ -1,7 +1,7 @@
 package com.tet.fleamarket.dao;
 
 
-import com.tet.fleamarket.entity.User;
+import com.tet.fleamarket.entity.DemandItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +14,5 @@ import org.springframework.stereotype.Repository;
  * interface **Dao extends JpaRepository<**, id>
  */
 @Repository
-public interface UserDao extends JpaRepository<User, String> {
-    User findByUsername(String username);
+public interface DemandItemDao extends JpaRepository<DemandItem, String> {
 }

@@ -13,9 +13,24 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
 #dabtabase
   datasource:
 #    https://www.jianshu.com/p/7e9247c0b81a
-    url: jdbc:mysql://101.200.150.13:3306/flea?maxPoolSize=256&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://101.200.150.13:3306/test?maxPoolSize=256&serverTimezone=Asia/Shanghai
     username: tet
     password: mysqltet
+  jpa:
+    properties:
+      hibernate:
+#        需要设置为57才能实现外键约束
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        discriminator:
+          ignore_explicit_for_joined: true
+        hbm2ddl:
+          auto: update
+
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    show-sql: true
+
+
