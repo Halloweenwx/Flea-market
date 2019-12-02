@@ -1,60 +1,65 @@
 <template>
   <div>
     <Layout class="layout">
-      <Sider class="side-bar" :collapsed-width="78">
-        <Menu theme="light" :width="auto" @on-select="onSelect" accordion>
+      <Sider class="side-bar" :collapsed-width="100" style="">
+        <Menu theme="light" width="auto" accordion>
           <div class="user-icon">
-            <!-- <div class="user-img">
-              <img src="static/img/head.png" />
-            </div> -->
-            <p>Gavin</p>
+            <div class="user-img">
+              <img src="../assets/img/wx_cz.jpg" />
+            </div>
+            <p>{{ this.username }}</p>
           </div>
-          <MenuItem name="info">
+          <MenuItem name="info" :to="`/info`">
             <Icon type="md-person"></Icon>
             <span>个人信息</span>
           </MenuItem>
-          <Submenu name="address">
+          <MenuItem name="buy" :to="`/buy`">
+            <Icon type="ios-pricetag"></Icon>
+            <span>我要买</span>
+          </MenuItem>
+          <MenuItem name="sell" :to="`/sell`">
+            <Icon type="ios-pricetag"></Icon>
+            <span>我要卖</span>
+          </MenuItem>
+          <!-- <Submenu name="address">
             <template slot="title">
               <Icon type="md-locate"></Icon>
               <span>收货地址</span>
             </template>
-            <MenuItem name="myAddress">我的收货地址</MenuItem>
-            <MenuItem name="addAddress">添加收货地址</MenuItem>
+            <MenuItem name="Address" :to="`/address`">我的收货地址</MenuItem>
+            <MenuItem name="addAddress" :to="`/address/add`"
+              >添加收货地址</MenuItem
+            >
           </Submenu>
-          <MenuItem name="order">
+          <MenuItem name="order" :to="`/order`">
             <Icon type="md-clipboard"></Icon>
-            <span>购物订单</span>
-          </MenuItem>
-          <MenuItem name="shoppingCar">
-            <Icon type="ios-cart"></Icon>
-            <span>购物车</span>
-          </MenuItem>
+            <span>交易明细</span>
+          </MenuItem> -->
         </Menu>
       </Sider>
-      <Layout class="layout">
-        <Header :style="{ background: '#fff' }">
-          <h2>{{ activeTitle }}</h2>
-        </Header>
-        <Content class="content">
-          <transition mode="out-in">
-            <router-view></router-view>
-          </transition>
-        </Content>
-        <Footer class="layout-footer-center">2018 &copy; Gavin</Footer>
-      </Layout>
+      <Content class="content">
+        <router-view></router-view>
+      </Content>
     </Layout>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      username: 'admin'
+    }
+  },
+  methods: {}
+}
 </script>
 
 <style scoped>
 .side-bar {
-  height: "calc(100vh - 35px)";
-  background: "#fff";
-  overflow: "auto";
+  height: 600px;
+  background: #fff;
+  overflow: auto;
 }
 .side-bar a {
   color: #232323;
@@ -79,14 +84,26 @@ export default {}
 .user-img img {
   width: 100%;
 }
-.content {
-  margin: 15px;
-  background-color: #fff;
-  padding: 15px;
+.Header p {
+  height: 50px;
+  text-align: center;
 }
+content {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+}
+/* .content {
+  height: 600px;
+  margin: 0 0 15px 0;
+  padding: 15px;
+} */
 .layout-footer-center {
   padding: 0px 15px;
   padding-bottom: 15px;
   text-align: center;
+}
+.content {
+  margin: 10px 10px 0 10px;
 }
 </style>

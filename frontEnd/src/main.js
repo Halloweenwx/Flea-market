@@ -1,11 +1,10 @@
+import axios from 'axios'
 import Vue from 'vue'
 import App from './App.vue'
+import './assets/css/base.css'
+import './plugins/iview.js'
 import router from './router'
 import store from './store'
-import './plugins/iview.js'
-import './assets/css/base.css'
-
-import axios from 'axios'
 // 配置请求的根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 axios.interceptors.request.use(config => {

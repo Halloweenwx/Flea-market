@@ -2,10 +2,10 @@
   <div>
     <div>
       <Row class="container">
-        <Col span="13" offset="2" class="img_box">
+        <iCol span="13" offset="1" class="img_box">
           <img src="../assets/img/sale.jpg" alt="" />
-        </Col>
-        <Col span="9" class="login_box">
+        </iCol>
+        <iCol span="9" offset="1" class="login_box">
           <div class="login_container">
             <div class="login_header">
               <p>欢迎登录</p>
@@ -13,7 +13,7 @@
             <div class="form_box">
               <Form ref="loginFormRef" :model="loginForm" :rules="loginRuleRef">
                 <FormItem prop="username">
-                  <Input
+                  <iInput
                     type="text"
                     v-model="loginForm.username"
                     clearable
@@ -21,10 +21,10 @@
                     placeholder="用户名"
                   >
                     <Icon type="ios-person-outline" slot="prepend"></Icon>
-                  </Input>
+                  </iInput>
                 </FormItem>
                 <FormItem prop="password">
-                  <Input
+                  <iInput
                     type="password"
                     v-model="loginForm.password"
                     clearable
@@ -32,7 +32,7 @@
                     placeholder="密码"
                   >
                     <Icon type="ios-lock-outline" slot="prepend"> </Icon>
-                  </Input>
+                  </iInput>
                 </FormItem>
                 <FormItem>
                   <Button
@@ -46,7 +46,7 @@
               </Form>
             </div>
           </div>
-        </Col>
+        </iCol>
       </Row>
     </div>
   </div>
@@ -79,7 +79,7 @@ export default {
         // if (res.meta.status !== 200) return this.$message.error('登陆失败')
         this.$Message.success('登陆成功')
         // window.sessionStorage.setItem('token', res.data.token)
-        this.$router.push('/home')
+        this.$router.push('/')
       })
     }
   }

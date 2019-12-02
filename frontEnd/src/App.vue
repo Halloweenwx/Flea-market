@@ -14,8 +14,7 @@ export default {
   name: 'app',
   data () {
     return {
-      excludeRoutes: [
-      ]
+      excludeRoutes: ['home', 'info', 'address', 'order', 'add', 'buy', 'sell']
     }
   },
   components: {
@@ -25,5 +24,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

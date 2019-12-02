@@ -8,7 +8,7 @@
             <li>品优购欢迎您！</li>
             <li>
               <router-link to="/login">请登录</router-link>
-              <router-link to="/register" href="#" class="style-red"
+              <router-link to="/register" class="style-red"
                 >免费注册</router-link
               >
             </li>
@@ -16,14 +16,14 @@
         </div>
         <div class="fr">
           <ul>
-            <li><a href="#">我的订单</a></li>
+            <li><router-link to="/shoppingcar">我的购物车</router-link></li>
             <li class="spacer"></li>
             <li>
-              <a href="#">我的品优购</a>
+              <router-link to="/info">我的品优购</router-link>
               <i class="icomoon"></i>
             </li>
             <li class="spacer"></li>
-            <li><a href="#">网站导航</a></li>
+            <li><router-link to="/">网站导航</router-link></li>
           </ul>
         </div>
       </div>
@@ -37,7 +37,7 @@ export default {}
 </script>
 
 <style scoped>
-@import "../assets/css/common.css";
+@import '../assets/css/common.css';
 /* 顶部快捷导航 */
 .shortcut {
   height: 31px;

@@ -1,70 +1,115 @@
 <template>
   <div>
-    <!-- header start -->
-    <div class="header w">
-      <!-- logo -->
-      <div class="logo">
-        <h1><a href="index.html" title="品优购">品优购</a></h1>
-      </div>
-      <!-- search -->
-      <div class="search">
-        <input type="text" class="text" value="请搜索" />
-        <button class="btn">搜索</button>
-      </div>
-      <!-- hotwords -->
-      <div class="hotwords">
-        <a href="#" class="style-red">优惠购</a>
-        <a href="#">百亿补贴</a>
-        <a href="#">1元购</a>
-        <a href="#">满100-100</a>
-        <a href="#">想不出来了</a>
-      </div>
-      <!-- shopcar -->
-      <div class="shopcar">
-        <i class="car"></i>
-        我的购物车
-        <i class="arrow"></i>
-        <i class="count">8</i>
-      </div>
-    </div>
-    <!-- header end -->
-    <!-- nav start -->
-    <div class="nav">
-      <div class="w">
-        <div class="dropdown fl">
-          <div class="dt">全部商品分类</div>
-          <div class="dd" style="display: none;">
-            <ul>
-              <li class="menu_item"><a href="#">家用电器</a><i></i></li>
-              <li class="menu_item">
-                <a href="#">手机 / 运营商 / 数码</a><i></i>
-              </li>
-            </ul>
+    <Navi></Navi>
+    <!-- 商品显示区域 -->
+    <!-- 卖 -->
+    <div class="content">
+      <div class="items">
+        <!-- 头部 -->
+        <div class="items-head">
+          <div class="items-icon">
+            <img src="static/img/index/clock.png" />
+          </div>
+          <div class="items-text">
+            <span class="items-title">二手闲置</span>
+            <span class="items-remarks">总有你想不到的低价</span>
           </div>
         </div>
-        <!-- 右侧导航 -->
-        <div class="navitems fl">
-          <ul>
-            <li><a href="#">服装</a></li>
-            <li><a href="#">美妆</a></li>
-            <li><a href="#">笔记本</a></li>
-            <li><a href="#">二手书</a></li>
-            <li><a href="#">家具</a></li>
-            <li><a href="#">美食</a></li>
-          </ul>
+        <!-- 内容 -->
+        <div class="items-content">
+          <div
+            class="items-item"
+            v-for="(item, index) in sellList"
+            :key="index"
+          >
+            <div class="items-item-img">
+              <router-link to="/detail">
+                <img :src="item.img" />
+              </router-link>
+            </div>
+            <div class="items-item-info">
+              <p>{{ item.intro }}</p>
+              <p>
+                <span class="items-price text-danger">
+                  <Icon type="social-yen"></Icon>
+                  {{ item.price }}
+                </span>
+                <span class="items-old-price">
+                  <s>{{ item.realPrice }}</s>
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <!-- nav end -->
+    <!-- 买 -->
+    <div class="content">
+      <div class="items">
+        <!-- 头部 -->
+        <div class="items-head">
+          <div class="items-icon">
+            <img src="static/img/index/clock.png" />
+          </div>
+          <div class="items-text">
+            <span class="items-title">求购信息</span>
+            <span class="items-remarks">你身边的小伙伴正需要</span>
+          </div>
+        </div>
+        <!-- 内容 -->
+        <div class="items-content">
+          <div class="items-item" v-for="(item, index) in buyList" :key="index">
+            <div class="items-item-img">
+              <router-link to="/detail">
+                <img :src="item.img" />
+              </router-link>
+            </div>
+            <div class="items-item-info">
+              <p>{{ item.intro }}</p>
+              <p>
+                <span class="items-price text-danger">
+                  <Icon type="social-yen"></Icon>
+                  {{ item.price }}
+                </span>
+                <span class="items-old-price">
+                  <s>{{ item.realPrice }}</s>
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {}
+import Navi from '../components/Navi'
+import { mapActions, mapState } from 'vuex'
+export default {
+  data () {
+    return {}
+  },
+  methods: {
+    ...mapActions(['loadSellList']),
+    searchItems (value) {
+      this.$router.push('/search')
+    }
+  },
+  created () {
+    this.loadSellList()
+  },
+  computed: {
+    ...mapState(['sellList', 'buyList'])
+  },
+  components: {
+    Navi
+  }
+}
 </script>
 
 <style>
-@import "../assets/css/base.css";
+@import '../assets/css/base.css';
 /* header区域 */
 .header {
   position: relative;
@@ -73,7 +118,7 @@ export default {}
 .logo {
   position: absolute;
   top: 25px;
-  left: 0px;
+  left: 50px;
   width: 175px;
   height: 56px;
 }
@@ -81,13 +126,16 @@ export default {}
   display: block;
   width: 175px;
   height: 56px;
-  background: url("../assets/img/logo.png");
+  background: url('../assets/img/logo.png');
   font-size: 0;
 }
 .search {
   position: absolute;
   top: 25px;
-  left: 348px;
+  left: 460px;
+}
+.search .box {
+  width: 300px;
 }
 .text {
   float: left;
@@ -100,7 +148,7 @@ export default {}
 .btn {
   float: left;
   width: 82px;
-  height: 36px;
+  height: 32px;
   background-color: #b1191a;
   border: 0;
   font-size: 16px;
@@ -109,7 +157,7 @@ export default {}
 .hotwords {
   position: absolute;
   top: 65px;
-  left: 348px;
+  left: 450px;
 }
 .hotwords a {
   margin: 0 10px;
@@ -117,7 +165,7 @@ export default {}
 .shopcar {
   position: absolute;
   top: 25px;
-  right: 32px;
+  right: 80px;
   width: 138px;
   height: 34px;
   border: 1px solid #dfdfdf;
@@ -126,13 +174,13 @@ export default {}
   font-size: 12px;
 }
 .car {
-  font-family: "icomoon";
+  font-family: 'icomoon';
   margin-left: 13px;
   margin-right: 5px;
   color: #da5555;
 }
 .arrow {
-  font-family: "icomoon";
+  font-family: 'icomoon';
 }
 .count {
   position: absolute;
@@ -145,65 +193,109 @@ export default {}
   color: #fff;
   border-radius: 7px 7px 7px 0;
 }
-/* nav start */
-.nav {
-  height: 45px;
-  border-bottom: 2px solid #b1191a;
+/* itemList start */
+.content {
+  width: 1008px;
+  margin: 0px auto 50px;
 }
-.dropdown {
-  width: 209px;
-  height: 45px;
-}
-.dropdown .dt {
+/*物品展示*/
+.items {
   width: 100%;
-  height: 100%;
-  background-color: #b1191a;
-  font-size: 16px;
-  text-align: center;
-  line-height: 45px;
-  color: #fff;
-}
-.dropdown .dd {
-  height: 465px;
-  background-color: #c81623;
-  margin-top: 2px;
-}
-.menu_item {
-  height: 31px;
-  line-height: 31px;
-  margin-left: 1px;
-  padding: 0 10px;
-  transition: all 0.5s;
-}
-.menu_item:hover {
+  height: 330px;
+  margin: 15px auto;
   background-color: #fff;
-  padding-left: 20px;
 }
-.menu_item:hover a {
-  color: #c81623;
+.items-head {
+  width: 100%;
+  height: 50px;
+  background-color: #e01222;
 }
-.menu_item a {
-  font-size: 14px;
-  color: #fff;
-}
-.menu_item i {
-  float: right;
-  font-family: "icomoon";
-  font-size: 18px;
-  color: #fff;
-}
-.navitems {
-  margin-left: 10px;
-}
-.navitems li {
+.items-icon {
+  width: 68px;
+  height: 100%;
   float: left;
 }
-.navitems li a {
-  display: block;
+.items-icon img {
+  width: 35px;
+  height: 35px;
+  margin-top: 6px;
+  margin-left: 15px;
+  animation-name: shake-clock;
+  animation-duration: 0.3s;
+  animation-iteration-count: infinite; /*设置无线循环*/
+}
+/*定义闹钟震动动画关键帧*/
+@keyframes shake-clock {
+  0% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+  100% {
+    transform: rotate(-8deg);
+  }
+}
+.items-text {
+  width: 300px;
   height: 100%;
-  line-height: 45px;
-  padding: 0 25px;
-  font-size: 16px;
-  color: #333;
+  float: left;
+}
+.items-text .items-title {
+  font-size: 22px;
+  line-height: 50px;
+  color: #fff;
+}
+.items-text .items-remarks {
+  margin-left: 5px;
+  font-size: 10px;
+  color: #fff;
+}
+.items-content {
+  width: 100%;
+  height: 280px;
+}
+.items-item {
+  width: 183px;
+  height: 250px;
+  margin-top: 15px;
+  margin-left: 15px;
+  box-shadow: 0px 0px 8px #ccc;
+  cursor: pointer;
+  float: left;
+}
+.items-item-img {
+  width: 160px;
+  height: 160px;
+  margin: 0px auto;
+  overflow: hidden;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+}
+.items-item-img img {
+  width: 130px;
+  height: 130px;
+  margin-left: 15px;
+  margin-top: 15px;
+  transition: margin-top 0.3s;
+}
+.items-item-img:hover img {
+  margin-top: 6px;
+  transition: margin-top 0.3s;
+}
+.items-item-info {
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 12px;
+  color: #009688;
+}
+.items-item-info i:first-child {
+  font-size: 14px;
+}
+.items-price {
+  margin-right: 5px;
+  font-size: 25px;
+  font-weight: bold;
 }
 </style>
