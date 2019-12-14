@@ -71,7 +71,8 @@
           <dl class="mod_help_item mod_help_app">
             <dt>帮助中心</dt>
             <dd>
-              <img src="../assets/img/wx_cz.jpg" alt="" />
+              <img src="../assets/img/qrcode.png" alt="" />
+              <p>生活不易<br>打赏一下</p>
             </dd>
           </dl>
         </div>
@@ -81,7 +82,7 @@
             关于我们 | 联系我们 | 联系客服
           </p>
           <p class="mod_copyright_info">
-            地址：北京市海淀区西土城路
+            地址：北京市海淀区
           </p>
         </div>
       </div>
@@ -93,7 +94,7 @@
 export default {}
 </script>
 
-<style>
+<style scoped>
 @import '../assets/css/common.css';
 /* footer */
 .footer {
@@ -141,7 +142,7 @@ export default {}
 }
 .mod_help {
   width: 100%;
-  height: 187px;
+  height: 200px;
   border-bottom: 1px solid #b2dfdb;
   background-color: #fff;
 }
@@ -156,12 +157,21 @@ export default {}
   font-size: 16px;
   margin-bottom: 10px;
 }
-.mod_help_item dd {
-  height: 22px;
-}
+
 .mod_help_app dt,
 .mod_help_app p {
   padding-left: 12px;
+}
+.mod_help_app dd img{
+  width: auto;
+  height: auto;
+  max-width: 50%;
+  max-height: 50%;
+}
+.mod_help_app dd p {
+  margin-top: 5px;
+  margin-left: 10px;
+  width: 100px;
 }
 .mod_copyright {
   padding-top: 10px;

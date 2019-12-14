@@ -5,13 +5,14 @@ import './assets/css/base.css'
 import './plugins/iview.js'
 import router from './router'
 import store from './store'
+
 // 配置请求的根路径
-axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
-axios.interceptors.request.use(config => {
-  // console.log(config)
-  config.headers.Authorization = window.sessionStorage.getItem('token')
-  return config
-})
+axios.defaults.baseURL = 'http://10.128.216.38:8080'
+// axios.interceptors.request.use(config => {
+//   // console.log(config)
+//   config.headers.Authorization = window.sessionStorage.getItem('token')
+//   return config
+// })
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

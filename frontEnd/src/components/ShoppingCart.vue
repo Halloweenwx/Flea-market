@@ -1,105 +1,64 @@
 <template>
-  <div>
-    <!-- <Search></Search>
-    <GoodsListNav></GoodsListNav>-->
-    <div class="goods-list-container">
-      <Alert show-icon class="tips-box">
-        小提示
-        <Icon type="md-bulb" slot="icon"></Icon>
-        <template slot="desc"
-          >请点击商品前的选择框，选择购物车中的商品，点击付款即可。</template
-        >
-      </Alert>
-      <Table
-        border
-        ref="selection"
-        :columns="columns"
-        :data="shoppingCart"
-        size="large"
-        @on-selection-change="select"
-        @on-select-cancel="wb"
-        no-data-text="您的购物车没有商品，请先添加商品到购物车再点击购买"
+  <div class="goods-list-container">
+    <Alert show-icon class="tips-box">
+      小提示
+      <Icon type="md-bulb" slot="icon"></Icon>
+      <template slot="desc"
+        >请点击商品前的选择框，选择购物车中的商品，点击付款即可。</template
       >
-        <template slot-scope="{ row, index }" slot="price">
-          <iInput
-            type="text"
-            v-model="row.price"
-            v-if="row.type === '竞价'"
-            @on-change="update(row, index)"
-          ></iInput>
-          <span v-else>{{ row.price }}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="count">
-          <iInput
-            type="text"
-            v-model="row.count"
-            @on-change="update(row, index)"
-          ></iInput>
-        </template>
-      </Table>
-      <!-- <div class="address-container">
-        <h3>收货人信息</h3>
-        <div class="address-box">
-          <div class="address-check">
-            <div class="address-check-name">
-              <span
-                ><Icon type="ios-checkmark-circle-outline"></Icon>
-                {{ checkAddress.name }}</span
-              >
-            </div>
-            <div class="address-detail">
-              <p>{{ checkAddress.address }}</p>
-            </div>
-          </div>
-          <Collapse>
-            <Panel>
-              选择地址
-              <p slot="content">
-                <RadioGroup vertical size="large" @on-change="changeAddress">
-                  <Radio
-                    :label="item.addressId"
-                    v-for="(item, index) in address"
-                    :key="index"
-                  >
-                    <span
-                      >{{ item.name }} {{ item.province }} {{ item.city }} {{item.area}}
-                      {{ item.address }} {{ item.phone }}
-                      {{ item.postalcode }}</span
-                    >
-                  </Radio>
-                </RadioGroup>
-              </p>
-            </Panel>
-          </Collapse>
-        </div>
-      </div>-->
-      <div class="remarks-container">
-        <h3>备注</h3>
-        <i-input
-          v-model="remarks"
-          size="large"
-          placeholder="在这里填写备注信息"
-          class="remarks-input"
-        ></i-input>
-      </div>
-      <div class="invoices-container">
-        <h3>发票信息</h3>
-        <p>该商品不支持开发票</p>
-      </div>
-      <div class="pay-container">
-        <div class="pay-box">
-          <p>
-            <span>应付总额：</span>
-            <span class="money">
-              <Icon type="logo-yen"></Icon>
-              {{ totalPrice.toFixed(2) }}
-            </span>
-          </p>
-          <div class="pay-btn">
-            <router-link to="/pay">
-              <Button type="error" size="large">支付订单</Button>
-            </router-link>
-          </div>
+    </Alert>
+    <Table
+      border
+      ref="cart"
+      :columns="columns"
+      :data="shoppingCart"
+      size="large"
+      no-data-text="您的购物车没有商品，请先添加商品到购物车再点击购买"
+      @on-selection-change="select"
+    >
+      <template slot-scope="{ row, index }" slot="price">
+        <iInput
+          type="text"
+          v-model="row.price"
+          v-if="row.type === '竞价'"
+          @on-change="update(row, index)"
+        ></iInput>
+        <span v-else>{{ row.price }}</span>
+      </template>
+      <template slot-scope="{ row, index }" slot="count">
+        <iInput
+          type="text"
+          v-model="row.count"
+          @on-change="update(row, index)"
+        ></iInput>
+      </template>
+    </Table>
+    <div class="remarks-container">
+      <h3>备注</h3>
+      <i-input
+        v-model="remarks"
+        size="large"
+        placeholder="在这里填写备注信息"
+        class="remarks-input"
+      ></i-input>
+    </div>
+    <div class="invoices-container">
+      <h3>发票信息</h3>
+      <p>该商品不支持开发票</p>
+    </div>
+    <div class="pay-container">
+      <div class="pay-box">
+        <p>
+          <span>应付总额：</span>
+          <span class="money">
+            <Icon type="logo-yen"></Icon>
+            {{ this.totalPrice.toFixed(2) }}
+          </span>
+        </p>
+        <div class="pay-btn">
+          <router-link to="/pay">
+            <Button type="error" size="large">支付订单</Button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -165,16 +124,18 @@ export default {
       shoppingCart: [
         {
           goods_id: '1529931938150',
+          isSelected: true,
           count: 1,
-          img: 'static/img/goodsDetail/pack/1.jpg',
+          img: require('../assets/img/1.jpg'),
           type: '竞价',
           price: 28,
           title: '苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳'
         },
         {
           goods_id: '1529931938150',
+          isSelected: true,
           count: 1,
-          img: 'static/img/goodsDetail/pack/1.jpg',
+          img: require('../assets/img/1.jpg'),
           type: '一口价',
           price: 28,
           title: '苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳'
@@ -183,6 +144,7 @@ export default {
       shoppingCartTable: [
         {
           goods_id: '1529931938150',
+          isSelected: true,
           count: 1,
           img: 'static/img/goodsDetail/pack/1.jpg',
           type: '竞价',
@@ -191,6 +153,7 @@ export default {
         },
         {
           goods_id: '1529931938150',
+          isSelected: true,
           count: 1,
           img: 'static/img/goodsDetail/pack/1.jpg',
           type: '一口价',
@@ -199,33 +162,34 @@ export default {
         }
       ],
       remarks: '',
-      totalPrice: 0,
-      priceChanged: []
+      // totalPrice: 0,
+      selected: []
+    }
+  },
+  computed: {
+    totalPrice () {
+      let price = 0
+      this.shoppingCartTable.forEach(value => {
+        if (value.isSelected) price += value.count * value.price
+      })
+      return price
     }
   },
   methods: {
     select (selection) {
-      // console.log(selection)
-      this.goodsCheckList = selection
-      this.totalPrice = 0
-      this.goodsCheckList.forEach(item => {
-        this.totalPrice += item.price * item.count
-      })
-    },
-    wb (selection, row) {
-      this.shoppingCart = this.shoppingCartTable
+      for (var i in this.$refs.cart.objData) {
+        if (this.$refs.cart.objData[i]._isChecked) {
+          this.shoppingCartTable[i].isSelected = true
+        } else this.shoppingCartTable[i].isSelected = false
+      }
     },
     update (row, index) {
-      this.totalPrice -= this.shoppingCartTable[index].count * this.shoppingCartTable[index].price
       this.shoppingCartTable[index].price = row.price
       this.shoppingCartTable[index].count = row.count
-      this.totalPrice += this.shoppingCartTable[index].count * this.shoppingCartTable[index].price
     }
   },
   mounted () {
-    setTimeout(() => {
-      this.$refs.selection.selectAll(true)
-    }, 500)
+    this.$refs.cart.selectAll(true)
   }
 }
 </script>

@@ -8,7 +8,7 @@
         <!-- 头部 -->
         <div class="items-head">
           <div class="items-icon">
-            <img src="static/img/index/clock.png" />
+            <img src="../assets/img/clock.png" />
           </div>
           <div class="items-text">
             <span class="items-title">二手闲置</span>
@@ -49,7 +49,7 @@
         <!-- 头部 -->
         <div class="items-head">
           <div class="items-icon">
-            <img src="static/img/index/clock.png" />
+            <img src="@/assets/img/clock.png" />
           </div>
           <div class="items-text">
             <span class="items-title">求购信息</span>
@@ -108,91 +108,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import '../assets/css/base.css';
-/* header区域 */
-.header {
-  position: relative;
-  height: 105px;
-}
-.logo {
-  position: absolute;
-  top: 25px;
-  left: 50px;
-  width: 175px;
-  height: 56px;
-}
-.logo a {
-  display: block;
-  width: 175px;
-  height: 56px;
-  background: url('../assets/img/logo.png');
-  font-size: 0;
-}
-.search {
-  position: absolute;
-  top: 25px;
-  left: 460px;
-}
-.search .box {
-  width: 300px;
-}
-.text {
-  float: left;
-  width: 445px;
-  height: 32px;
-  border: 2px solid #b1191a;
-  padding-left: 10px;
-  color: #ccc;
-}
-.btn {
-  float: left;
-  width: 82px;
-  height: 32px;
-  background-color: #b1191a;
-  border: 0;
-  font-size: 16px;
-  color: #fff;
-}
-.hotwords {
-  position: absolute;
-  top: 65px;
-  left: 450px;
-}
-.hotwords a {
-  margin: 0 10px;
-}
-.shopcar {
-  position: absolute;
-  top: 25px;
-  right: 80px;
-  width: 138px;
-  height: 34px;
-  border: 1px solid #dfdfdf;
-  background-color: #f7f7f7;
-  line-height: 34px;
-  font-size: 12px;
-}
-.car {
-  font-family: 'icomoon';
-  margin-left: 13px;
-  margin-right: 5px;
-  color: #da5555;
-}
-.arrow {
-  font-family: 'icomoon';
-}
-.count {
-  position: absolute;
-  top: -5px;
-  left: 100px;
-  background-color: #e60012;
-  height: 14px;
-  padding: 0 3px;
-  line-height: 14px;
-  color: #fff;
-  border-radius: 7px 7px 7px 0;
-}
 /* itemList start */
 .content {
   width: 1008px;
@@ -252,6 +169,7 @@ export default {
   color: #fff;
 }
 .items-content {
+  margin-top: 10px;
   width: 100%;
   height: 280px;
 }

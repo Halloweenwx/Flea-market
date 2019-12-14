@@ -1,32 +1,32 @@
 <template>
   <div>
-          <!-- header start -->
+    <!-- header start -->
     <div class="header w">
       <!-- logo -->
       <div class="logo">
         <h1>
-          <a href="/" title="品优购">品优购</a>
+          <a href="/" title="TET">TET</a>
         </h1>
       </div>
       <!-- search -->
       <div class="search">
         <iInput
-            placeholder="请输入内容"
-            class="box"
-            clearable
-            search
-            auto-complete
-            @on-search="searchItems"
-          >
-            <!-- <iButton
+          placeholder="请输入内容"
+          class="box"
+          clearable
+          search
+          auto-complete
+          @on-search="searchItems"
+        >
+          <!-- <iButton
               slot="append"
               icon="ios-search-outline"
               @click="getItemList"
             >
-            </iButton> -->
-          </iInput>
+          </iButton>-->
+        </iInput>
         <!-- <input type="text" class="text" value="请搜索" />
-        <button class="btn">搜索</button> -->
+        <button class="btn">搜索</button>-->
       </div>
       <!-- hotwords -->
       <div class="hotwords">
@@ -42,7 +42,7 @@
           <i class="car"></i>
           我的购物车
           <i class="arrow"></i>
-          <i class="count">8</i>
+          <i class="count">{{this.cartCount}}</i>
         </a>
       </div>
     </div>
@@ -50,16 +50,20 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   methods: {
     searchItems (value) {
       this.$router.push('/search')
     }
+  },
+  computed: {
+    ...mapState(['cartCount'])
   }
 }
 </script>
 
-<style>
+<style scoped>
 @import "../assets/css/base.css";
 /* header区域 */
 .header {
@@ -68,16 +72,16 @@ export default {
 }
 .logo {
   position: absolute;
-  top: 25px;
+  top: 0px;
   left: 50px;
-  width: 175px;
-  height: 56px;
+  width: 114px;
+  height: 114px;
 }
 .logo a {
   display: block;
-  width: 175px;
-  height: 56px;
-  background: url("../assets/img/logo.png");
+  width: 114px;
+  height: 114px;
+  background: url('../assets/logo.jpg');
   font-size: 0;
 }
 .search {
@@ -125,13 +129,13 @@ export default {
   font-size: 12px;
 }
 .car {
-  font-family: "icomoon";
+  font-family: 'icomoon';
   margin-left: 13px;
   margin-right: 5px;
   color: #da5555;
 }
 .arrow {
-  font-family: "icomoon";
+  font-family: 'icomoon';
 }
 .count {
   position: absolute;
@@ -143,10 +147,4 @@ export default {
   line-height: 14px;
   color: #fff;
   border-radius: 7px 7px 7px 0;
-}
-/* itemList start */
-.content {
-  width: 1008px;
-  margin: 0px auto 50px;
-}
-</style>
+}</style>

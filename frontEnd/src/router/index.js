@@ -55,7 +55,7 @@ const routes = [
         component: InputInfo
       },
       {
-        path: '/registerdone',
+        path: '/done',
         component: RegisterDone
       }
     ]

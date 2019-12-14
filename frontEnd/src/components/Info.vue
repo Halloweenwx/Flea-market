@@ -35,13 +35,13 @@
               :description="userInfo.mobile"
             />
           </ListItem>
-          <ListItem>
+          <!-- <ListItem>
             <ListItemMeta
               avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
               title="邮箱"
               :description="userInfo.email"
             />
-          </ListItem>
+          </ListItem> -->
           <ListItem>
             <ListItemMeta
               avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
@@ -156,9 +156,7 @@ export default {
     }
     // 验证密码
     var validatePassCheck = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.editForm.password) {
+      if (value !== this.editForm.password) {
         callback(new Error('两次输入的密码不一样'))
       } else {
         callback()
@@ -168,18 +166,18 @@ export default {
     return {
       // 用户信息
       userInfo: {
-        username: 'admin',
-        name: 'wxl',
-        mobile: '1888',
+        username: 'wxl1999',
+        name: '王晓磊',
+        mobile: '18810312968',
         // email: '123',
         city: '北京'
       },
       // 编辑用户信息
       editForm: {
-        username: '',
-        name: '',
-        city: '',
-        mobile: '',
+        username: 'wxl1999',
+        name: '王晓磊',
+        city: '北京',
+        mobile: '18810312968',
         // email: '',
         password: '',
         repassword: ''
@@ -195,7 +193,7 @@ export default {
         //   { required: true, message: '请填写您所在的城市', trigger: 'blur' }
         // ],
         mobile: [
-          { required: true, message: '请填写手机号', trigger: 'blur' },
+          // { required: true, message: '请填写手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ],
         // email: [
@@ -203,7 +201,7 @@ export default {
         //   { validator: checkEmail, trigger: 'blur' }
         // ],
         password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
+          // { required: true, message: '密码不能为空', trigger: 'blur' },
           {
             type: 'string',
             min: 6,
@@ -224,7 +222,7 @@ export default {
           }
         ],
         repassword: [
-          { required: true, message: '密码不能为空', trigger: 'blur' },
+          // { required: true, message: '密码不能为空', trigger: 'blur' },
           { validator: validatePassCheck, trigger: 'blur' }
         ]
       }
@@ -235,12 +233,15 @@ export default {
     editUserInfo () {
       // this.$Message.success('更新用户信息成功')
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return
+        if (!valid) {
+          this.$Message.error('更新用户信息失败')
+          return
+        }
         // const { data: res } = this.$http.put('users/' + this.editForm.id, {
         //   email: this.editFrom.email,
         //   mobile: this.editForm.mobile
         // })
-
+        this.userInfo.mobile = this.editForm.mobile
         // if (res.meta.status !== 200) {
         //   return this.$message.error('更新用户信息失败')
         // }

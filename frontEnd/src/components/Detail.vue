@@ -1,19 +1,16 @@
 <template>
   <div>
     <Navi></Navi>
-    <div>
-      detail
-    </div>
   </div>
 </template>
 
 <script>
-import Navi from '../components/Navi'
+import Navi from './Navi.vue'
 export default {
-  component: {
+  components: {
     Navi
   }
 }
 </script>
 
-<style></style>
+<style scoped></style>

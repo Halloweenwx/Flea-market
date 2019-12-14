@@ -14,7 +14,6 @@
           <iInput
             placeholder="请输入内容"
             v-model="queryInfo.query"
-            clearable
             @on-clear="getItemList"
           >
             <iButton
@@ -114,14 +113,14 @@
         <FormItem label="物品描述" prop="description">
           <iInput v-model="addForm.description" clearable></iInput>
         </FormItem>
-        <FormItem label="物品照片" prop="photo">
-          <iInput v-model="addForm.photo"></iInput>
+        <FormItem label="物品图片" prop="photo">
+          <!-- <iInput v-model="addForm.photo"></iInput> -->
           <Upload
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//jsonplaceholder.typicode.com/posts/"
-            @on-success="upLoadImg"
+            action="//10.128.216.38:8080/image/upload"
+            :on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
               <Icon
@@ -172,13 +171,13 @@
         <FormItem label="物品描述" prop="description">
           <iInput v-model="editForm.description"></iInput>
         </FormItem>
-        <FormItem label="物品照片" prop="photo">
-          <iInput v-model="editForm.photo"></iInput>
+        <FormItem label="物品图片" prop="photo">
+          <!-- <iInput v-model="editForm.photo"></iInput> -->
           <Upload
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//jsonplaceholder.typicode.com/posts/"
+            action="//image/upload"
             @on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
@@ -221,7 +220,7 @@ export default {
           state: '待购'
         }
       ],
-      total: 1,
+      total: 100,
       //  控制添加对话框的显示与隐藏
       addDialogVisible: false,
       columns: [

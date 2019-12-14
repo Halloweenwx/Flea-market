@@ -58,7 +58,8 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        isCustomer: true
       },
       loginRuleRef: {
         username: [
@@ -66,7 +67,12 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { type: 'string', min: 6, message: '密码不能少于6位', trigger: 'blur' }
+          {
+            type: 'string',
+            min: 6,
+            message: '密码不能少于6位',
+            trigger: 'blur'
+          }
         ]
       }
     }
@@ -75,10 +81,11 @@ export default {
     login (name) {
       this.$refs[name].validate(async valid => {
         if (!valid) return
-        // const { data: res } = await this.$http.post('login', this.loginForm)
-        // if (res.meta.status !== 200) return this.$message.error('登陆失败')
+        const { data: res } = await this.$http.post('login', this.loginForm)
+        console.log(res)
+        if (res.meta.status !== 200) return this.$message.error('登陆失败')
         this.$Message.success('登陆成功')
-        // window.sessionStorage.setItem('token', res.data.token)
+        window.sessionStorage.setItem('token', res.data.token)
         this.$router.push('/')
       })
     }
@@ -112,7 +119,7 @@ export default {
 .login_container {
   width: 80%;
   height: 280px;
-  border: #ED3F14 solid 1px;
+  border: #ed3f14 solid 1px;
 }
 .login_header {
   height: 50px;
@@ -121,7 +128,7 @@ export default {
   line-height: 50px;
   letter-spacing: 5px;
   color: #fff;
-  background-color: #ED3F14;
+  background-color: #ed3f14;
 }
 .form_box {
   width: 80%;

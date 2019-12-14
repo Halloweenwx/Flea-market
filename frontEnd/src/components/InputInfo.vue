@@ -33,7 +33,7 @@
       <FormItem label="城市" prop="city">
         <Cascader
           :data="cityList"
-          v-model="formValidate.city"
+          v-model="formValidate.cname"
           trigger="hover"
           clearable
         ></Cascader>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
   data () {
     const validatePassCheck = (rule, value, callback) => {
@@ -129,20 +129,20 @@ export default {
           ]
         }
       ],
-      formValidate: {
-        username: '',
-        name: '',
-        // email: '',
-        city: '',
-        password: '',
-        repassword: ''
-      },
+      // formValidate: {
+      //   username: '',
+      //   name: '',
+      //   // email: '',
+      //   city: '',
+      //   password: '',
+      //   repassword: ''
+      // },
       ruleValidate: {
         username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' }
         ],
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
-        city: [{ required: true, message: '城市不能为空', trigger: 'blur' }],
+        // city: [{ required: true, message: '城市不能为空', trigger: 'blur' }],
         // mail: [
         //   { required: true, message: '邮箱不能为空', trigger: 'blur' },
         //   { type: 'email', message: '邮箱格式错误', trigger: 'blur' }
@@ -177,24 +177,38 @@ export default {
   },
   methods: {
     ...mapMutations(['moveOn']),
+    getCityList () {
+      const { data: res } = this.$http.get('/city')
+      this.cityList = res.cityList
+    },
     handleSubmit (name) {
       this.$refs[name].validate(valid => {
         if (valid) {
+          // const userinfo = {
+          //   username: this.formValidate.username,
+          //   name: this.formValidate.name,
+          //   password: this.formValidate.password,
+          //   mail: this.formValidate.mail,
+          //   phone: this.$route.query.phone
+          // }
+          console.log(this.formValidate)
+          var userInfo = this.formValidate
+          userInfo.city = this.formValidate[this.formValidate.length - 1]
+          this.$http.post('register/info', userInfo)
           this.$Message.success('注册成功')
-          //   const userinfo = {
-          //     username: this.formValidate.username,
-          //     name: this.formValidate.name,
-          //     password: this.formValidate.password,
-          //     mail: this.formValidate.mail,
-          //     phone: this.$route.query.phone
-          //   }
-          this.moveOn()
           this.$router.push({ path: '/done' })
+          this.moveOn()
         } else {
           this.$Message.error('注册失败')
         }
       })
     }
+  },
+  created () {
+    this.getCityList()
+  },
+  computed: {
+    ...mapState(['formValidate'])
   }
 }
 </script>

@@ -5,7 +5,7 @@
         <Menu theme="light" width="auto" accordion>
           <div class="user-icon">
             <div class="user-img">
-              <img src="../assets/img/wx_cz.jpg" />
+              <img src="../assets/img/qrcode.png" />
             </div>
             <p>{{ this.username }}</p>
           </div>
