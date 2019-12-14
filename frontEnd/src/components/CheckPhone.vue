@@ -1,30 +1,46 @@
 <template>
   <div class="info-form">
-    <Form ref="formValidate" :model="formValidate" :label-width="80" :rules="ruleValidate">
+    <Form
+      ref="formValidate"
+      :model="formValidate"
+      :label-width="80"
+      :rules="ruleValidate"
+    >
       <FormItem label="手机号" prop="phone">
-        <i-input v-model="formValidate.phone" clearable size="large" placeholder="请输入手机号"></i-input>
+        <i-input
+          v-model="formValidate.phone"
+          clearable
+          size="large"
+          placeholder="请输入手机号"
+        ></i-input>
       </FormItem>
       <FormItem label="验证码" prop="checkNum">
-        <i-input v-model="formValidate.checkNum" size="large" placeholder="请输入验证码">
+        <i-input
+          v-model="formValidate.checkNum"
+          size="large"
+          placeholder="请输入验证码"
+        >
           <Button slot="append" @click="getcheckNum">获取验证码</Button>
         </i-input>
       </FormItem>
       <FormItem>
-        <Button type="error" size="large" @click="handleSubmit('formValidate')">验证手机号</Button>
+        <Button type="error" size="large" @click="handleSubmit('formValidate')"
+          >验证手机号</Button
+        >
       </FormItem>
     </Form>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
-      // formValidate: {
-      //   phone: '',
-      //   checkNum: ''
-      // },
+      formValidate: {
+        phone: '13852897754',
+        checkNum: '1234'
+      },
       ruleValidate: {
         phone: [
           { required: true, message: '手机号不能为空', trigger: 'blur' },
@@ -50,9 +66,14 @@ export default {
   },
   methods: {
     ...mapMutations(['moveOn']),
-    getcheckNum () {
+    async getcheckNum () {
+      console.log()
+      const { data: res } = await this.$http.post('register/phone', {
+        phone: this.formValidate.phone
+      })
+      if (res.code !== 200) return this.$Message.error('获取验证码失败')
       this.$Message.success({
-        content: '验证码为：1234',
+        content: '验证码为: ' + res.data.checkNum,
         duration: 6,
         closable: true
       })
@@ -75,10 +96,10 @@ export default {
         }
       })
     }
-  },
-  computed: {
-    ...mapState(['formValidate'])
   }
+  // computed: {
+  //   ...mapState(['formValidate'])
+  // }
 }
 </script>
 

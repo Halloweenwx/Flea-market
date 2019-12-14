@@ -3,7 +3,7 @@
     <div>
       <Row class="container">
         <iCol span="13" offset="1" class="img_box">
-          <img src="../assets/img/sale.jpg" alt="" />
+          <img src="../assets/img/sale.jpg" alt />
         </iCol>
         <iCol span="9" offset="1" class="login_box">
           <div class="login_container">
@@ -31,17 +31,16 @@
                     size="large"
                     placeholder="密码"
                   >
-                    <Icon type="ios-lock-outline" slot="prepend"> </Icon>
+                    <Icon type="ios-lock-outline" slot="prepend"></Icon>
                   </iInput>
                 </FormItem>
                 <FormItem>
-                  <Button
-                    type="error"
-                    size="large"
-                    @click="login('loginFormRef')"
-                    long
-                    >登录</Button
-                  >
+                  <Button type="error" size="large" @click="login('loginFormRef')" long>登录</Button>
+                </FormItem>
+                <FormItem>
+                  <div class="administor">
+                    <a href="/#/admin/login">我是管理员</a>
+                  </div>
                 </FormItem>
               </Form>
             </div>
@@ -83,10 +82,10 @@ export default {
         if (!valid) return
         const { data: res } = await this.$http.post('login', this.loginForm)
         console.log(res)
-        if (res.meta.status !== 200) return this.$message.error('登陆失败')
+        if (res.code !== 200) return this.$message.error(res.msg)
         this.$Message.success('登陆成功')
-        window.sessionStorage.setItem('token', res.data.token)
-        this.$router.push('/')
+        // window.sessionStorage.setItem('token', res.data.token)
+        // this.$router.push('/')
       })
     }
   }
@@ -118,7 +117,7 @@ export default {
 }
 .login_container {
   width: 80%;
-  height: 280px;
+  height: 300px;
   border: #ed3f14 solid 1px;
 }
 .login_header {
@@ -133,5 +132,11 @@ export default {
 .form_box {
   width: 80%;
   margin: 30px auto;
+}
+.administor {
+  text-align: center;
+}
+.administor a {
+  color: #eaeaea;
 }
 </style>

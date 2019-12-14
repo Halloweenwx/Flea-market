@@ -3,7 +3,7 @@
     <Header></Header>
     <router-view />
     <!-- 部分路由不应该包含这个Footer -->
-    <Footer v-if="excludeRoutes.indexOf($route.name) == -1"></Footer>
+    <Footer v-if="excludeFooter.indexOf($route.name) == -1"></Footer>
   </div>
 </template>
 
@@ -14,7 +14,18 @@ export default {
   name: 'app',
   data () {
     return {
-      excludeRoutes: ['home', 'info', 'address', 'order', 'add', 'buy', 'sell']
+      // excludeHeader: ['adminLogin', 'adminHome'],
+      excludeFooter: [
+        'home',
+        'info',
+        'address',
+        'order',
+        'add',
+        'buy',
+        'sell',
+        'adminLogin',
+        'adminHome'
+      ]
     }
   },
   components: {
