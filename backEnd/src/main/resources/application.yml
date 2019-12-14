@@ -1,15 +1,12 @@
 #thymeleaf
 spring:
-  thymeleaf:
-    mode: HTML
-    encoding: UTF-8
-    servlet:
-      content-type: text/html
-    cache:
-      false
-  devtools:
-    restart:
-      enabled: true
+#  thymeleaf:
+#    mode: HTML
+#    encoding: UTF-8
+#    servlet:
+#      content-type: text/html
+#    cache:
+#      false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -33,4 +30,12 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     show-sql: true
 
+# values
+values:
+  service:
+    UserService:
+      saltLen: 10
+
+    tokenService:
+      expireSecond: 172800
 

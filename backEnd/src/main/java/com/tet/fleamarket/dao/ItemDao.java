@@ -15,4 +15,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ItemDao extends JpaRepository<Item, String> {
+    Item findByName(String name);
+    Item findByIid(String iid);
 }

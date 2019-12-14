@@ -3,6 +3,7 @@ package com.tet.fleamarket;
 import com.tet.fleamarket.dao.UserDao;
 import com.tet.fleamarket.entity.Administrator;
 import com.tet.fleamarket.entity.User;
+import com.tet.fleamarket.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,13 @@ public class FleamarketApplicationTests {
     }
     @Autowired
     public UserDao userDao;
+    @Autowired
+    public UserService userService;
     @Test
     public void addAdmin(){
         User admin = new Administrator();
-        String salt = RandomStringUtils.randomAscii(10);
-        admin.setSalt(salt);
-
-        userDao.save(admin);
-        System.out.println(admin);
+        admin = userDao.findByUsername("admin2");
+        System.out.println(userService.usernameExists("admin2"));
+        System.out.println(admin.getUsername());
     }
 }

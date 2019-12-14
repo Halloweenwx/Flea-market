@@ -27,15 +27,15 @@ public class PictureController {
 
     @GetMapping("/image/fetch/{pid}")
     public Result fetch(@PathVariable String pid) {
-        Status status = BAD_REQUEST;
+        Status status;
         Picture pictureFetched = new Picture();
         try {
             pictureFetched = pictureOss.findByPid(pid);
             status = FATCH_SUCCESS;
-        }catch (Exception e){
+        } catch (Exception e) {
             status = BAD_REQUEST;
         }
-        return new Result(status,pictureFetched);
+        return new Result(status, pictureFetched);
     }
 
     @PostMapping("/image/upload")

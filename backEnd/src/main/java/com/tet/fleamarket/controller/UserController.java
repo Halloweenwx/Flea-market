@@ -1,21 +1,25 @@
 package com.tet.fleamarket.controller;
 
-import com.tet.fleamarket.dao.IdleItemDao;
-import com.tet.fleamarket.dao.ItemDao;
-import com.tet.fleamarket.dao.UserDao;
-import com.tet.fleamarket.entity.IdleItem;
+import com.tet.fleamarket.entity.Administrator;
+import com.tet.fleamarket.entity.Customer;
 import com.tet.fleamarket.entity.User;
+import com.tet.fleamarket.service.TokenService;
+import com.tet.fleamarket.service.UserService;
+import com.tet.fleamarket.util.Result;
+import com.tet.fleamarket.util.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import static com.tet.fleamarket.util.Encryption.randomNumber;
+import static com.tet.fleamarket.util.status.UserStatus.*;
 
 /**
  * @author Hou Weiying
@@ -23,98 +27,98 @@ import java.security.NoSuchAlgorithmException;
  */
 @RestController
 public class UserController {
-    private final UserDao userDao;
-    private final ItemDao itemDao;
-    private final IdleItemDao idleItemDao;
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    public UserController(UserDao userDao, ItemDao itemDao, IdleItemDao idleItemDao) {
-        this.userDao = userDao;
-        this.itemDao = itemDao;
-        this.idleItemDao = idleItemDao;
-    }
+    private TokenService tokenService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/login")
-    public ResponseEntity<JSONObject> login(@RequestBody() User loginUser) {
+    public Result login(@RequestBody() User loginUser, HttpServletResponse response) {
         JSONObject data = new JSONObject();
-        User userInBase = userDao.findByUsername(loginUser.getUsername());
+        Status status = BAD_REQUEST;
+        System.out.println(loginUser.getUsername() + ":" + loginUser.getPassword());
 
+        if (loginUser.getIsCustomer()) {
+            loginUser = new Customer(loginUser);
+        } else {
+            loginUser = new Administrator(loginUser);
+        }
         try {
-            if (userInBase == null) {
-                //用户不存在
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else if (!checkPassword(loginUser, userInBase)) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+            if (!userService.usernameExists(loginUser.getUsername())) {
+                //用户名不存在
+                status = USER_NOT_FOUND;
+            } else if (!userService.checkPassword(loginUser)) {
+                //密码不正确
+                status = WRONG_PASSWORD;
             } else {
                 //登录成功
-
-                return ResponseEntity.ok(data);
-
+                status = LOGIN_SUCCESS;
+                User userInBase = userService.getUserByUsername(loginUser.getUsername());
+                String token = tokenService.genUserToken(userInBase);
+                Cookie cookie = new Cookie("token", token);
+                response.addCookie(cookie);
+//                data.put("token",token);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            logger.error("未知错误");
         }
+        logger.info(loginUser.getUsername() + status.toString());
+
+        return new Result(status, data);
     }
-    @PostMapping("/register")
-    public ResponseEntity<JSONObject> register(@RequestBody() User registerUser){
+
+    @PostMapping("/register/info")
+    public Result register(@RequestBody() Customer registerCustomer) {
         JSONObject data = new JSONObject();
-        if()
-    }
-    @GetMapping("/list")
-    public ResponseEntity list() {
-        System.out.println(userDao.findById("hi"));
-        return ResponseEntity.ok(userDao.findById("hi"));
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity test() {
-        IdleItem item = new IdleItem();
-        item.setStartPrice(100d);
-        item.setPriceFixed(false);
-
-        itemDao.save(item);
-
-        return ResponseEntity.ok(userDao.findById("hi"));
-    }
-
-    private Boolean checkPassword(User userToCheck, User userInBase) {
-
-        String keyToCheck = userToCheck.getPassword() + userInBase.getSalt();
-        String md5 = getMD5(keyToCheck);
-        System.out.println(keyToCheck);
-        System.out.println(md5);
-        return md5.equals(userInBase.getPassword());
-    }
-
-    private static String getMD5(String plainText) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            //获取MD5实例
-            md.update(plainText.getBytes());
-            //此处传入要加密的byte类型值
-            byte[] digest = md.digest();
-            //此处得到的是md5加密后的byte类型值
-
-            int i;
-            StringBuilder sb = new StringBuilder();
-            for (byte b : digest) {
-                i = b;
-                if (i < 0) {
-                    i += 256;
-                }
-                if (i < 16) {
-                    sb.append(0);
-                }
-                sb.append(Integer.toHexString(i));
-                //通过Integer.toHexString方法把值变为16进制
-            }
-            return sb.toString().substring(0, 32);
-            //从下标0开始，length目的是截取多少长度的值
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
+        Status status = BAD_REQUEST;
+        if (userService.usernameExists(registerCustomer.getUsername())) {
+            //用户存在
+            status = ALREADY_EXISTS;
+        } else {
+            //注册成功
+            status = REGISTER_SUCCESS;
+            userService.addUser(registerCustomer);
         }
+        logger.info(registerCustomer.getUsername() + status.toString());
+        return new Result(status, data);
+//        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/register/phone")
+    public Result register(@RequestBody() JSONObject res) {
+        JSONObject data = new JSONObject();
+        Status status = BAD_REQUEST;
+        System.out.println(res.get("phone"));
+        try {
+            String checkNum = randomNumber(6);
+            data.put("checkNum", checkNum);
+            status = SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("未知错误");
+        }
+        return new Result(status, data);
+    }
+//    @GetMapping("/list")
+//    public ResponseEntity list() {
+//        System.out.println(userDao.findById("hi"));
+//        return ResponseEntity.ok(userDao.findById("hi"));
+//    }
+//
+//    @GetMapping("/test")
+//    public ResponseEntity test() {
+//        IdleItem item = new IdleItem();
+//        item.setStartPrice(100d);
+//        item.setPriceFixed(false);
+//
+//        itemDao.save(item);
+//
+//        return ResponseEntity.ok(userDao.findById("hi"));
+//    }
+
+
 }

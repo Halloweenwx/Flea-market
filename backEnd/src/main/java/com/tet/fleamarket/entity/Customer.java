@@ -1,5 +1,6 @@
 package com.tet.fleamarket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,15 +20,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Customer extends User{
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Customer extends User {
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumns({@JoinColumn(name="member_level", referencedColumnName="enLevel")})
+    @JoinColumns({@JoinColumn(name = "member_level", referencedColumnName = "enLevel")})
     private MemberLevel memberLevel;
-    @ManyToOne
-    @JoinColumns({@JoinColumn(name="city", referencedColumnName="code")})
-    private City city;
+
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "uid"))
     private Set<String> address;
 
+    public Customer(User user) {
+        super(user.getUid(), user.getUsername(), user.getPassword(), user.getSalt(), user.getRealName(), user.getPhone(), user.getRegisterTime(), user.getModifiedTime(), user.getCity(), user.getIsCustomer());
+    }
 }

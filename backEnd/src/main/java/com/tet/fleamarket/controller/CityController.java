@@ -1,5 +1,6 @@
 package com.tet.fleamarket.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tet.fleamarket.dao.CityDao;
 import com.tet.fleamarket.entity.City;
 import com.tet.fleamarket.util.Result;
@@ -23,6 +24,7 @@ public class CityController {
 
     @GetMapping("/city")
     public Result fetchCityList() {
+        JSONObject response = new JSONObject();
         ArrayList<City> cityList = cityDao.findAll();
         Map<Integer, City> cityMap = new HashMap<>();
         ArrayList<City> cityRes = new ArrayList<>();
@@ -63,6 +65,7 @@ public class CityController {
                 cityRes.add(city);
             }
         }
+
         return Result.success(cityRes);
     }
 }

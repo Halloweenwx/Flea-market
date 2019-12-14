@@ -1,5 +1,6 @@
 package com.tet.fleamarket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "User")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    @Column(length = 32, unique = true)
+    @GenericGenerator(name = "system-uuid", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(length = 36, unique = true)
     private String uid;
     @Column(length = 32)
     private String username;
@@ -43,5 +45,11 @@ public class User {
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp modifiedTime;
+    @ManyToOne
+    @JoinColumns({@JoinColumn(name="city", referencedColumnName="code")})
+    private City city;
+
+    @Transient
+    private Boolean isCustomer;
 
 }
