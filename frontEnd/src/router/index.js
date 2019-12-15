@@ -2,6 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Add from '../components/Add.vue'
 import Address from '../components/Address.vue'
+import adminAgency from '../components/admin/Agency.vue'
+import adminDemand from '../components/admin/Demand.vue'
+import adminHome from '../components/admin/Home.vue'
+import adminLogin from '../components/admin/Login.vue'
+import adminProduct from '../components/admin/Product.vue'
+import adminUser from '../components/admin/User.vue'
 import Buy from '../components/Buy.vue'
 import CheckPhone from '../components/CheckPhone.vue'
 import Detail from '../components/Detail.vue'
@@ -63,6 +69,23 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/admin/login',
+    name: 'adminLogin',
+    component: adminLogin
+  },
+  {
+    path: '/admin/home',
+    name: 'adminHome',
+    component: adminHome,
+    redirect: '/admin/user',
+    children: [
+      { path: '/admin/user', name: 'adminUser', component: adminUser },
+      { path: '/admin/product', name: 'product', component: adminProduct },
+      { path: '/admin/demand', name: 'demand', component: adminDemand },
+      { path: '/admin/agency', name: 'agency', component: adminAgency }
+    ]
   },
   {
     path: '/home',

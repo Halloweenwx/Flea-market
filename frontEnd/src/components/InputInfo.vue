@@ -33,7 +33,7 @@
       <FormItem label="城市" prop="city">
         <Cascader
           :data="cityList"
-          v-model="formValidate.cname"
+          v-model="formValidate.city"
           trigger="hover"
           clearable
         ></Cascader>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 export default {
   data () {
     const validatePassCheck = (rule, value, callback) => {
@@ -129,14 +129,14 @@ export default {
           ]
         }
       ],
-      // formValidate: {
-      //   username: '',
-      //   name: '',
-      //   // email: '',
-      //   city: '',
-      //   password: '',
-      //   repassword: ''
-      // },
+      formValidate: {
+        username: 'wxl1999',
+        name: '王晓磊',
+        // email: '',
+        city: [],
+        password: '123456',
+        repassword: '123456'
+      },
       ruleValidate: {
         username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' }
@@ -177,27 +177,33 @@ export default {
   },
   methods: {
     ...mapMutations(['moveOn']),
-    getCityList () {
-      const { data: res } = this.$http.get('/city')
-      this.cityList = res.cityList
+    async getCityList () {
+      const { data: res } = await this.$http.get('city')
+      // console.log(res)
+      this.cityList = res.data
+      // console.log(this.cityList)
     },
     handleSubmit (name) {
-      this.$refs[name].validate(valid => {
+      this.$refs[name].validate(async valid => {
         if (valid) {
-          // const userinfo = {
-          //   username: this.formValidate.username,
-          //   name: this.formValidate.name,
-          //   password: this.formValidate.password,
-          //   mail: this.formValidate.mail,
-          //   phone: this.$route.query.phone
-          // }
-          console.log(this.formValidate)
-          var userInfo = this.formValidate
-          userInfo.city = this.formValidate[this.formValidate.length - 1]
-          this.$http.post('register/info', userInfo)
+          const userInfo = {
+            username: this.formValidate.username,
+            name: this.formValidate.name,
+            city: {
+              'value': this.formValidate.city[this.formValidate.city.length - 1]
+            },
+            password: this.formValidate.password,
+            phone: this.$route.query.phone
+          }
+          // console.log(userInfo)
+          // var userInfo = this.formValidate
+          // userInfo.city = this.formValidate[this.formValidate.length - 1]
+          const { data: res } = await this.$http.post('register/info', userInfo)
+          // console.log(res)
+          if (res.code !== 200) return this.$Message.error(res.msg)
           this.$Message.success('注册成功')
-          this.$router.push({ path: '/done' })
           this.moveOn()
+          this.$router.push({ path: '/done' })
         } else {
           this.$Message.error('注册失败')
         }
@@ -206,10 +212,10 @@ export default {
   },
   created () {
     this.getCityList()
-  },
-  computed: {
-    ...mapState(['formValidate'])
   }
+  // computed: {
+  //   ...mapState(['formValidate'])
+  // }
 }
 </script>
 
