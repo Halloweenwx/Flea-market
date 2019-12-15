@@ -9,15 +9,15 @@ export default new Vuex.Store({
     cartCount: '99+',
     // 注册
     registerStep: 0,
-    formValidate: {
-      phone: '13818888666',
-      checkNum: '1234',
-      username: 'wxl1999',
-      name: '王',
-      city: '',
-      password: '123456',
-      repassword: '123456'
-    },
+    // formValidate: {
+    //   phone: '13818888666',
+    //   checkNum: '1234',
+    //   username: 'wxl1999',
+    //   name: '王',
+    //   city: '',
+    //   password: '123456',
+    //   repassword: '123456'
+    // },
     // 物品展示
     sellList: [],
     buyList: [],
