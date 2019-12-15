@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * @author Hou Weiying
@@ -32,13 +34,17 @@ public class PictureOss {
     public Picture findByPid(String pid) throws IOException {
         OSSObject ossObject = ossClient.getObject(bucketName, pid);
         InputStream content = ossObject.getObjectContent();
+
+        Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
+
+        URL url = ossClient.generatePresignedUrl(bucketName, pid, expiration);
+
         Picture pictureToFind = new Picture();
 
         byte[] byt = new byte[content.available()];
         content.read(byt);
-
         pictureToFind.setFileBin(byt);
-
+        pictureToFind.setUrl(url.toString());
         return pictureToFind;
     }
 

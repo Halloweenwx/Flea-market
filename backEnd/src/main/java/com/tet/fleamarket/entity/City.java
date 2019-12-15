@@ -25,13 +25,32 @@ import java.util.ArrayList;
 public class City {
     @Id
     @Column(length = 16, unique = true)
-    @JsonProperty(value = "value")
     private String code;
+
     @JsonProperty(value = "label")
     private String cnName;
-
     @Transient
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ArrayList<City> children;
 
+    /**
+     * @return 序列化后的名称
+     */
+    @JsonProperty(value = "value")
+    public String getCode() {
+        return code;
+    }
+
+    @JsonProperty(value = "city")
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    /**
+     * 保证只提供code的时候City可以被构造
+     * @param code code
+     */
+    public City(String code) {
+        this.code = code;
+    }
 }

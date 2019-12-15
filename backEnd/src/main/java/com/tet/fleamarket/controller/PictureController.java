@@ -25,7 +25,7 @@ public class PictureController {
     @Autowired
     PictureOss pictureOss;
 
-    @GetMapping("/image/fetch/{pid}")
+    @GetMapping("/picture/fetch/{pid}")
     public Result fetch(@PathVariable String pid) {
         Status status;
         Picture pictureFetched = new Picture();
@@ -38,7 +38,7 @@ public class PictureController {
         return new Result(status, pictureFetched);
     }
 
-    @PostMapping("/image/upload")
+    @PostMapping("/picture/upload")
     public Result upload(@RequestParam("file") MultipartFile file) {
         Status status = BAD_REQUEST;
         Picture pictureSaved = new Picture();

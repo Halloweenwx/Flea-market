@@ -32,5 +32,7 @@ public class Picture {
 
     @Transient
     private byte[] fileBin;
+    @Transient
+    private String url;
 
 }

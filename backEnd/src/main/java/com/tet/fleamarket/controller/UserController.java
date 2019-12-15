@@ -59,6 +59,8 @@ public class UserController {
                 User userInBase = userService.getUserByUsername(loginUser.getUsername());
                 String token = tokenService.genUserToken(userInBase);
                 Cookie cookie = new Cookie("token", token);
+                cookie.setPath("/");
+                cookie.setMaxAge(3600);
                 response.addCookie(cookie);
 //                data.put("token",token);
             }

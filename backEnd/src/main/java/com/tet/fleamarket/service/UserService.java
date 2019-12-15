@@ -28,12 +28,19 @@ public class UserService {
     private int saltLen;
 
     public User getUserByUsername(String username) {
-        return userDao.findByUsername(username);
+        if(!username.isEmpty()) {
+            return userDao.findByUsername(username);
+        }else{
+            return new User();
+        }
     }
 
     public Boolean usernameExists(String username) {
+        if(username.isEmpty()){
+            return false;
+        }
         User userInDataBase = getUserByUsername(username);
-        if (userInDataBase != null) {
+        if (userIsLegal(userInDataBase)) {
             logger.info(userInDataBase.getUsername());
         }
         return userIsLegal(userInDataBase);
