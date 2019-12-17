@@ -66,7 +66,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 获取物品列表的参数对象
       queryInfo: {
@@ -118,7 +118,7 @@ export default {
     }
   },
   methods: {
-    showDetail (index) {
+    showDetail(index) {
       this.$Modal.info({
         title: '查看详情',
         content: '111<br/>111'
