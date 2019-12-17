@@ -1,61 +1,4 @@
-import {
-  Affix,
-  Alert,
-  AutoComplete,
-  Avatar,
-  BackTop,
-  Badge,
-  Breadcrumb,
-  Button,
-  Card,
-  Carousel,
-  Cascader,
-  Checkbox,
-  Circle,
-  Col,
-  Collapse,
-  ColorPicker,
-  Content,
-  DatePicker,
-  Dropdown,
-  Footer,
-  Form,
-  Header,
-  Icon,
-  Input,
-  InputNumber,
-  Layout,
-  List,
-  LoadingBar,
-  Menu,
-  Message,
-  Modal,
-  Notice,
-  Option,
-  OptionGroup,
-  Page,
-  Poptip,
-  Progress,
-  Radio,
-  Rate,
-  Row,
-  Scroll,
-  Select,
-  Sider,
-  Slider,
-  Spin,
-  Steps,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
-  Timeline,
-  TimePicker,
-  Tooltip,
-  Transfer,
-  Tree,
-  Upload
-} from 'view-design'
+import { Affix, Alert, AutoComplete, Avatar, BackTop, Badge, Breadcrumb, Button, Card, Carousel, Cascader, Checkbox, Circle, Col, Collapse, ColorPicker, Content, DatePicker, Dropdown, Footer, Form, Header, Icon, Input, InputNumber, Layout, List, LoadingBar, Menu, Message, Modal, Notice, Option, OptionGroup, Page, Poptip, Progress, Radio, Rate, Row, Scroll, Select, Sider, Slider, Spin, Steps, Switch, Table, Tabs, Tag, Timeline, TimePicker, Tooltip, Transfer, Tree, Upload } from 'view-design'
 import 'view-design/dist/styles/iview.css'
 import Vue from 'vue'
 
@@ -157,3 +100,4 @@ Object.keys(iview).forEach(key => {
 
 Vue.prototype.$Loading = LoadingBar
 Vue.prototype.$Message = Message
+Vue.prototype.$Modal = Modal

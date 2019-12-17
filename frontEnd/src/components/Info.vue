@@ -228,28 +228,32 @@ export default {
       }
     }
   },
+  created () {
+    this.getUserInfo()
+  },
   methods: {
     // 提交编辑的用户信息
     editUserInfo () {
       // this.$Message.success('更新用户信息成功')
-      this.$refs.editFormRef.validate(valid => {
-        if (!valid) {
-          this.$Message.error('更新用户信息失败')
-          return
-        }
-        // const { data: res } = this.$http.put('users/' + this.editForm.id, {
-        //   email: this.editFrom.email,
-        //   mobile: this.editForm.mobile
-        // })
-        this.userInfo.mobile = this.editForm.mobile
-        // if (res.meta.status !== 200) {
-        //   return this.$message.error('更新用户信息失败')
-        // }
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return this.$Message.error('更新用户信息失败')
+        const { data: res } = await this.$http.post('home/info', {
+          // email: this.editFrom.email,
+          mobile: this.editForm.mobile,
+          password: this.editForm.password
+        })
+        if (res.code !== 200) return this.$message.error(res.msg)
         // 刷新数据列表
+        this.userInfo.mobile = this.editForm.mobile
         // this.getUserList()
         // 提示修改成功
         this.$Message.success('更新用户信息成功')
       })
+    },
+    async getUserInfo () {
+      const { data: res } = await this.$http.get('/home/info')
+      if (res.meta.status !== 200) return this.$Message.error('获取用户信息失败')
+      this.userInfo = this.editForm = res.data
     }
   }
 }

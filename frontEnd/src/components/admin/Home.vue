@@ -11,7 +11,7 @@
       <!-- 侧边栏 -->
       <Sider class="sider">
         <!-- 侧边栏菜单区域 -->
-        <Menu class="menu" theme="dark" width="200px" accordion>
+        <Menu class="menu" theme="dark" width="auto" accordion>
           <MenuItem name="userInfo" :to="`/admin/user`">
             <Icon type="md-person"></Icon>
             <span>用户信息</span>
@@ -24,7 +24,11 @@
             <Icon type="md-pricetag"></Icon>
             <span>求购信息</span>
           </MenuItem>
-          <Submenu name="stat">
+          <MenuItem name="agency" :to="`/admin/agency`">
+            <Icon type="md-stats"></Icon>
+            <span>统计分析</span>
+          </MenuItem>
+          <!-- <Submenu name="stat">
             <template slot="title">
               <Icon type="md-stats" />
               统计分析
@@ -33,7 +37,7 @@
               <Icon type="md-cash"></Icon>
               中介费
             </MenuItem>
-          </Submenu>
+          </Submenu> -->
         </Menu>
       </Sider>
       <!-- 右侧内容主体 -->
@@ -95,6 +99,7 @@ export default {
 }
 
 .content {
-  background-color: #eaedf1;
+  /* background-color: #eaedf1; */
+  margin: 10px 10px 0 10px;
 }
 </style>

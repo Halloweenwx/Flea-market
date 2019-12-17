@@ -262,9 +262,6 @@ export default {
         description: '',
         photo: ''
       },
-      upLoadImg (response, file, fileList) {
-        console.log(response)
-      },
       //   添加表单的验证规则对象
       addFormRules: {
         type: [{ required: true, message: '请选择物品类型', trigger: 'blur' }],
@@ -358,6 +355,9 @@ export default {
     // 监听添加对话框的关闭
     addDialogClosed () {
       this.$refs.addFormRef.resetFields()
+    },
+    upLoadImg (response, file, fileList) {
+      console.log(response)
     },
     // 点击按钮添加求购信息
     addItem () {
