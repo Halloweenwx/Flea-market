@@ -23,7 +23,6 @@ public class CityController {
     @Autowired
     CityDao cityDao;
 
-    @TokenRequired
     @GetMapping("/city")
     public Result fetchCityList() {
         JSONObject response = new JSONObject();

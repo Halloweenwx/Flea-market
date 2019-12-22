@@ -15,6 +15,7 @@ public enum TokenStatus implements Status {
     /**
      * 用户登录/注册状态
      */
+    TOKEN_VALID(200,"token检验合法"),
     TOKEN_NOT_FOUND(404,"无token，请重新登录"),
     TOKEN_INVALID(400,"token错误"),
     USER_NOT_FOUND(400,"用户不存在，请重新登录"),

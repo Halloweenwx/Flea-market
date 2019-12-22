@@ -15,7 +15,8 @@ public enum UserStatus implements Status {
     /**
      * 用户登录/注册状态
      */
-    SUCCESS(200,"请求成功，结果已返回"),
+    SUCCESS(200,"请求成功"),
+    UPDATE_SUCCESS(200,"资料修改成功"),
     LOGIN_SUCCESS(200, "登陆成功"),
     REGISTER_SUCCESS(200, "注册成功"),
     WRONG_PASSWORD(400, "密码错误"),

@@ -39,7 +39,7 @@ public class TokenService {
         user.setUsername(username);
         return user;
     }
-    public String getTokenFromCoolies(Cookie[] cookies){
+    public String getTokenFromCookies(Cookie[] cookies){
         String token = null;
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -49,5 +49,8 @@ public class TokenService {
             }
         }
         return token;
+    }
+    public User getUserFromCookies(Cookie[] cookies){
+        return getUserFromToken(getTokenFromCookies(cookies));
     }
 }
