@@ -51,11 +51,11 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {}
   },
   methods: {
-    logout () {
+    logout() {
       window.sessionStorage.clear()
       this.$router.push('/admin/login')
     }

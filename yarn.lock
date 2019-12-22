@@ -2,3 +2,14 @@
 # yarn lockfile v1
 
 
+"@vue/eslint-config-standard@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.npm.taobao.org/@vue/eslint-config-standard/download/@vue/eslint-config-standard-5.0.1.tgz#0ffe65368cd45516498d581457098c69d9173cbe"
+  integrity sha1-D/5lNozUVRZJjVgUVwmMadkXPL4=
+  dependencies:
+    eslint-config-standard "^14.1.0"
+
+eslint-config-standard@^14.1.0:
+  version "14.1.0"
+  resolved "https://registry.npm.taobao.org/eslint-config-standard/download/eslint-config-standard-14.1.0.tgz#b23da2b76fe5a2eba668374f246454e7058f15d4"
+  integrity sha1-sj2it2/louumaDdPJGRU5wWPFdQ=

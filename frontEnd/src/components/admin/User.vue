@@ -55,7 +55,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 获取物品列表的参数对象
       queryInfo: {

@@ -24,22 +24,22 @@ export default new Vuex.Store({
     searchList: []
   },
   mutations: {
-    moveOn (state) {
+    moveOn(state) {
       state.registerStep += 1
     },
-    done (state) {
+    done(state) {
       state.registerStep = 0
     },
-    SET_SECKILLS_INFO (state, sellList) {
+    SET_SECKILLS_INFO(state, sellList) {
       state.sellList = sellList
       state.buyList = sellList
     },
-    SET_GOODS_LIST (state, data) {
+    SET_GOODS_LIST(state, data) {
       state.searchList = data
     }
   },
   actions: {
-    loadSellList ({ commit }) {
+    loadSellList({ commit }) {
       return new Promise((resolve, reject) => {
         const data = [
           {
@@ -76,7 +76,7 @@ export default new Vuex.Store({
         commit('SET_SECKILLS_INFO', data)
       })
     },
-    loadSearchList ({ commit }) {
+    loadSearchList({ commit }) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           const data = [
