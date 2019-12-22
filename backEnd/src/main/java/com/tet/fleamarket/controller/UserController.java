@@ -7,18 +7,22 @@ import com.tet.fleamarket.service.TokenService;
 import com.tet.fleamarket.service.UserService;
 import com.tet.fleamarket.util.Result;
 import com.tet.fleamarket.util.Status;
+import com.tet.fleamarket.util.TokenRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.tet.fleamarket.util.Encryption.randomNumber;
+import static com.tet.fleamarket.util.status.FetchStatus.FATCH_SUCCESS;
 import static com.tet.fleamarket.util.status.UserStatus.*;
 
 /**
@@ -62,7 +66,6 @@ public class UserController {
                 cookie.setPath("/");
                 cookie.setMaxAge(3600);
                 response.addCookie(cookie);
-//                data.put("token",token);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,6 +107,18 @@ public class UserController {
             logger.error("未知错误");
         }
         return new Result(status, data);
+    }
+
+    @TokenRequired
+    @GetMapping("/home/info")
+    public Result userInfo(HttpServletRequest httpServletRequest){
+        Cookie[] cookies = httpServletRequest.getCookies();
+        String token = tokenService.getTokenFromCoolies(cookies);
+        User user = tokenService.getUserFromToken(token);
+        Status status;
+        User userInBase = userService.getUserByUid(user.getUid());
+        status = FATCH_SUCCESS;
+        return new Result(status, userInBase);
     }
 //    @GetMapping("/list")
 //    public ResponseEntity list() {

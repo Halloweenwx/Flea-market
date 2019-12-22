@@ -5,6 +5,7 @@ import com.tet.fleamarket.entity.Item;
 import com.tet.fleamarket.service.ItemService;
 import com.tet.fleamarket.util.Result;
 import com.tet.fleamarket.util.Status;
+import com.tet.fleamarket.util.TokenRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
+
     @GetMapping("/item/{iid}")
     public Result fetch(@PathVariable String iid) {
         Status status;
@@ -32,6 +34,7 @@ public class ItemController {
         return new Result(status, itemFetched);
     }
 
+    @TokenRequired
     @PostMapping("/item/add")
     public Result add(@RequestBody() Item itemToAdd) {
         Status status;

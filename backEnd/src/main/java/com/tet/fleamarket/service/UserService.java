@@ -35,6 +35,14 @@ public class UserService {
         }
     }
 
+    public User getUserByUid(String uid) {
+        if(!uid.isEmpty()) {
+            return userDao.findByUid(uid);
+        }else{
+            return new User();
+        }
+    }
+
     public Boolean usernameExists(String username) {
         if(username.isEmpty()){
             return false;

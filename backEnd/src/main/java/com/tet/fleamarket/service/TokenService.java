@@ -2,9 +2,13 @@ package com.tet.fleamarket.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.tet.fleamarket.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.Cookie;
+import java.util.Map;
 
 /**
  * @author Hou Weiying
@@ -21,7 +25,29 @@ public class TokenService {
                 .withClaim("uid",user.getUid())
                 .withClaim("username",user.getUsername())
                 .withClaim("expireSecond",expireSecond)
-                .sign(Algorithm.HMAC256(user.getUid()));
+                .sign(Algorithm.HMAC256(user.getSalt()));
 
+    }
+
+    public User getUserFromToken(String token){
+        User user = new User();
+        Map<String, Claim> claims;
+        String uid = JWT.decode(token).getAudience().get(0);
+        claims = JWT.decode(token).getClaims();
+        String username = claims.get("username").asString();
+        user.setUid(uid);
+        user.setUsername(username);
+        return user;
+    }
+    public String getTokenFromCoolies(Cookie[] cookies){
+        String token = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+        return token;
     }
 }
