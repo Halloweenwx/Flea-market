@@ -2,6 +2,7 @@ package com.tet.fleamarket.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "User")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     @Id
@@ -47,12 +49,13 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp modifiedTime;
     @ManyToOne
-    @JoinColumns({@JoinColumn(name="city", referencedColumnName="code")})
+    @JoinColumns({@JoinColumn(name = "city", referencedColumnName = "code")})
     private City city;
 
     @Transient
-    @JsonIgnore
     private Boolean isCustomer;
 
-
+    public User(String uid) {
+        this.uid = uid;
+    }
 }

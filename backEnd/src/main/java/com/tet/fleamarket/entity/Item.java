@@ -1,5 +1,6 @@
 package com.tet.fleamarket.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,20 +27,21 @@ public class Item {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(length = 32, unique = true)
+    @Column(length = 36, unique = true)
     private String iid;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumns({@JoinColumn(name="belong", referencedColumnName="uid")})
-    private User belong;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumns({@JoinColumn(name="category", referencedColumnName="enCategory")})
+    //不可设置为all，会导致save失败 https://www.jianshu.com/p/e8caafce5445
+    @ManyToOne
+    // 将user对应值返回此处
+    @JoinColumns({@JoinColumn(name = "belong", referencedColumnName = "uid")})
+    private Customer belong;
+    @OneToOne
+    @JoinColumns({@JoinColumn(name = "category", referencedColumnName = "enCategory")})
     private Category category;
     private String name;
     private String description;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumns({@JoinColumn(name="status", referencedColumnName="enStatus")})
+    @OneToOne
+    @JoinColumns({@JoinColumn(name = "status", referencedColumnName = "enStatus")})
     private ItemStatus itemStatus;
-
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "iid"))
     private Set<Picture> pictures;

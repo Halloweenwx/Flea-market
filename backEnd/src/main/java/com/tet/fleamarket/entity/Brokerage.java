@@ -24,7 +24,7 @@ public class Brokerage {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(length = 32, unique = true)
+    @Column(length = 36, unique = true)
     private String brid;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumns({@JoinColumn(name="iid", referencedColumnName="iid")})

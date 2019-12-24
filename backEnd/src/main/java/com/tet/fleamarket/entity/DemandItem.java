@@ -28,3 +28,4 @@ public class DemandItem extends Item{
     private Double lowestPrice;
     private Double highestPrice;
 }
+

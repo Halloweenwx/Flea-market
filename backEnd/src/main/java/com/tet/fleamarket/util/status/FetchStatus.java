@@ -15,8 +15,7 @@ public enum FetchStatus implements Status {
     /**
      * 用户登录/注册状态
      */
-    FATCH_SUCCESS(200,"请求成功，资源已返回"),
-    NAME_EXISTS(400,"资源重复"),
+    FETCH_SUCCESS(200,"请求成功，资源已返回"),
     RESOURCE_NOT_EXSITS(404,"资源不存在"),
     BAD_REQUEST(400, "无效请求");
 

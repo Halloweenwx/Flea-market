@@ -42,8 +42,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
         boolean pass = true;
         Status status = TOKEN_VALID;
-        Cookie[] cookies = httpServletRequest.getCookies();
-        String token = tokenService.getTokenFromCookies(cookies);
+//        Cookie[] cookies = httpServletRequest.getCookies();
+//        String token = tokenService.getTokenFromCookies(cookies);
+        String token = httpServletRequest.getHeader("Authorization");
         if (!(object instanceof HandlerMethod)) {
             return true;
         }
@@ -107,9 +108,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
             if (pass) {
                 //刷新cookie
-                Cookie cookie = new Cookie("token", tokenService.genUserToken(userInBase));
-                httpServletResponse.addCookie(cookie);
-                httpServletRequest.setAttribute("tuid", uid);
+//                Cookie cookie = new Cookie("token", tokenService.genUserToken(userInBase));
+//                httpServletResponse.addCookie(cookie);
+//                httpServletRequest.setAttribute("tuid", uid);
                 logger.info(status.getMsg() + ":当前用户为" + username);
             } else {
 //              不通过时需要调用writer写回Result

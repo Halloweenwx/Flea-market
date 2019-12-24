@@ -58,7 +58,7 @@ public class UserService {
     public Boolean userIsLegal(User user) {
         if (user != null) {
             logger.info(user.getUsername());
-            return !user.getUsername().isEmpty();
+            return !user.getUsername().isEmpty() && user.getPhone().length() <= 11;
         } else {
             logger.error("用户不合法");
             return false;

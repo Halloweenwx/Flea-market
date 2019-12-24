@@ -1,7 +1,12 @@
 package com.tet.fleamarket.dao;
 
 
+import com.tet.fleamarket.entity.Customer;
 import com.tet.fleamarket.entity.IdleItem;
+import com.tet.fleamarket.entity.Item;
+import com.tet.fleamarket.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +20,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IdleItemDao extends JpaRepository<IdleItem, String> {
+    IdleItem findByName(String name);
+
+    IdleItem findByIid(String iid);
+
+    Page<IdleItem> findAllByBelong_Uid(Pageable pageable, String uid);
 }
