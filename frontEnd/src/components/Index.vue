@@ -91,13 +91,15 @@ export default {
   },
   methods: {
     // ...mapActions(['loadSellList']),
-    loadSellList() {
-      const { data: res } = this.$http.get("fore/item/idle");
+    async loadSellList() {
+      const { data: res } = await this.$http.get("fore/item/idle");
+      console.log(res);
       if (res.code !== 200) return this.$Message.error("获取待售物品失败");
       this.sellList = res.data;
     },
-    loadBuyList() {
-      const { data: res } = this.$http.get("fore/item/demand");
+    async loadBuyList() {
+      const { data: res } = await this.$http.get("fore/item/demand");
+      console.log(res);
       if (res.code !== 200) return this.$Message.error("获取求购物品失败");
       this.buyList = res.data;
     },
@@ -105,8 +107,9 @@ export default {
       this.$router.push("/search");
     }
   },
-  created() {
+  mounted() {
     this.loadSellList();
+    this.loadBuyList();
   },
   // computed: {
   //   ...mapState(['sellList', 'buyList'])
