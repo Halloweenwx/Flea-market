@@ -3,9 +3,7 @@
     <Alert show-icon class="tips-box">
       小提示
       <Icon type="md-bulb" slot="icon"></Icon>
-      <template slot="desc"
-        >请点击商品前的选择框，选择购物车中的商品，点击付款即可。</template
-      >
+      <template slot="desc">请点击商品前的选择框，选择购物车中的商品，点击付款即可。</template>
     </Alert>
     <Table
       border
@@ -25,22 +23,13 @@
         ></iInput>
         <span v-else>{{ row.price }}</span>
       </template>
-      <template slot-scope="{ row, index }" slot="count">
-        <iInput
-          type="text"
-          v-model="row.count"
-          @on-change="update(row, index)"
-        ></iInput>
-      </template>
+      <!-- <template slot-scope="{ row, index }" slot="count">
+        <iInput type="text" v-model="row.count" @on-change="update(row, index)"></iInput>
+      </template>-->
     </Table>
     <div class="remarks-container">
       <h3>备注</h3>
-      <i-input
-        v-model="remarks"
-        size="large"
-        placeholder="在这里填写备注信息"
-        class="remarks-input"
-      ></i-input>
+      <iInput v-model="remarks" size="large" placeholder="在这里填写备注信息" class="remarks-input"></iInput>
     </div>
     <div class="invoices-container">
       <h3>发票信息</h3>
@@ -66,132 +55,161 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
-  beforeRouteEnter (to, from, next) {
-    window.scrollTo(0, 0)
-    next()
+  beforeRouteEnter(to, from, next) {
+    window.scrollTo(0, 0);
+    next();
   },
-  data () {
+  data() {
     return {
       goodsCheckList: [],
       columns: [
         {
-          type: 'selection',
+          type: "selection",
           width: 58,
-          align: 'center'
+          align: "center"
         },
         {
-          title: '图片',
-          key: 'img',
+          title: "图片",
+          key: "img",
           width: 86,
           render: (h, params) => {
-            return h('div', [
-              h('img', {
+            return h("div", [
+              h("img", {
                 attrs: {
                   src: params.row.img
                 }
               })
-            ])
+            ]);
           },
-          align: 'center'
+          align: "center"
         },
         {
-          title: '标题',
-          key: 'title',
-          align: 'center'
+          title: "标题",
+          key: "title",
+          align: "center"
         },
         {
-          title: '类型',
+          title: "类型",
           width: 198,
-          key: 'type',
-          align: 'center'
+          key: "type",
+          align: "center"
         },
         {
-          title: '数量',
-          key: 'count',
+          title: "商家名称",
+          key: "username",
           width: 80,
-          align: 'center',
-          slot: 'count'
+          align: "center"
+          // slot: "count"
         },
         {
-          title: '价格',
+          title: "价格",
           width: 80,
-          key: 'price',
-          align: 'center',
-          slot: 'price'
+          key: "price",
+          align: "center",
+          slot: "price"
         }
       ],
       shoppingCart: [
         {
-          goods_id: '1529931938150',
+          goods_id: "1529931938150",
           isSelected: true,
           count: 1,
-          img: require('../assets/img/1.jpg'),
-          type: '竞价',
+          img: require("../assets/img/1.jpg"),
+          type: "竞价",
           price: 28,
-          title: '苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳'
+          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
         },
         {
-          goods_id: '1529931938150',
+          goods_id: "1529931938150",
           isSelected: true,
           count: 1,
-          img: require('../assets/img/1.jpg'),
-          type: '一口价',
+          img: require("../assets/img/1.jpg"),
+          type: "一口价",
           price: 28,
-          title: '苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳'
+          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
         }
       ],
       shoppingCartTable: [
         {
-          goods_id: '1529931938150',
+          goods_id: "1529931938150",
           isSelected: true,
           count: 1,
-          img: 'static/img/goodsDetail/pack/1.jpg',
-          type: '竞价',
+          img: "static/img/goodsDetail/pack/1.jpg",
+          type: "竞价",
           price: 28,
-          title: '苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳'
+          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
         },
         {
-          goods_id: '1529931938150',
+          goods_id: "1529931938150",
           isSelected: true,
           count: 1,
-          img: 'static/img/goodsDetail/pack/1.jpg',
-          type: '一口价',
+          img: "static/img/goodsDetail/pack/1.jpg",
+          type: "一口价",
           price: 28,
-          title: '苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳'
+          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
         }
       ],
-      remarks: '',
+      remarks: "",
       // totalPrice: 0,
       selected: []
-    }
+    };
   },
   computed: {
-    totalPrice () {
-      let price = 0
+    totalPrice() {
+      let price = 0;
       this.shoppingCartTable.forEach(value => {
-        if (value.isSelected) price += value.count * value.price
-      })
-      return price
+        if (value.isSelected)
+          // price += value.count * value.price;
+          price += value.price;
+      });
+      return price;
     }
   },
   methods: {
-    select (selection) {
+    ...mapMutations(["changeCartCount"]),
+    select(selection) {
+      var cnt = 0;
       for (var i in this.$refs.cart.objData) {
         if (this.$refs.cart.objData[i]._isChecked) {
-          this.shoppingCartTable[i].isSelected = true
-        } else this.shoppingCartTable[i].isSelected = false
+          this.shoppingCartTable[i].isSelected = true;
+          cnt += 1;
+        } else this.shoppingCartTable[i].isSelected = false;
       }
+      this.changeCartCount(cnt);
     },
-    update (row, index) {
-      this.shoppingCartTable[index].price = row.price
-      this.shoppingCartTable[index].count = row.count
+    update(row, index) {
+      const oldPrice = this.shoppingCartTable[index].price;
+      this.shoppingCartTable[index].price = row.price;
+      const { data: res } = this.$http.post(
+        "cart/item/update",
+        this.shoppingCartTable
+      );
+      if (res.code !== 200) {
+        this.shoppingCartTable[index].price = oldPrice;
+        return this.$Message.error("更新购物车失败");
+      }
+      // this.shoppingCartTable[index].count = row.count;
+    },
+    getshoppingCart() {
+      const { data: res } = this.$http.get("cart");
+      if (res.code !== 200) return this.$Message.error("获取购物车信息失败");
+      this.shoppingCart = this.shoppingCartTable = res.data;
+    },
+    submit() {
+      const { data: res } = this.$http.get("cart/buy");
+      if (res.code !== 200) return this.$Message.error("提交订单失败");
+      this.$Message.success("提交订单成功");
     }
   },
-  mounted () {
-    this.$refs.cart.selectAll(true)
+  created() {
+    this.getshoppingCart();
+  },
+  mounted() {
+    this.$refs.cart.selectAll(true);
   }
-}
+};
 </script>
 
 <style scoped>

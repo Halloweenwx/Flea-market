@@ -50,17 +50,17 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 export default {
   methods: {
-    searchItems (value) {
-      this.$router.push('/search')
+    searchItems(value) {
+      this.$router.push("/search");
     }
   },
   computed: {
-    ...mapState(['cartCount'])
+    ...mapState(["cartCount"])
   }
-}
+};
 </script>
 
 <style scoped>
@@ -68,7 +68,7 @@ export default {
 /* header区域 */
 .header {
   position: relative;
-  height: 105px;
+  height: 120px;
 }
 .logo {
   position: absolute;
@@ -81,7 +81,7 @@ export default {
   display: block;
   width: 114px;
   height: 114px;
-  background: url('../assets/logo.jpg');
+  background: url("../assets/logo.jpg");
   font-size: 0;
 }
 .search {
@@ -129,13 +129,13 @@ export default {
   font-size: 12px;
 }
 .car {
-  font-family: 'icomoon';
+  font-family: "icomoon";
   margin-left: 13px;
   margin-right: 5px;
   color: #da5555;
 }
 .arrow {
-  font-family: 'icomoon';
+  font-family: "icomoon";
 }
 .count {
   position: absolute;
@@ -147,4 +147,5 @@ export default {
   line-height: 14px;
   color: #fff;
   border-radius: 7px 7px 7px 0;
-}</style>
+}
+</style>

@@ -7,12 +7,15 @@ import router from './router'
 import store from './store'
 
 // 配置请求的根路径
-axios.defaults.baseURL = 'http://10.128.216.38:8080'
-// axios.interceptors.request.use(config => {
-//   console.log(config)
-//   config.headers.Authorization = window.sessionStorage.getItem('token')
-//   return config
-// })
+axios.defaults.baseURL = 'http://192.168.137.196:8080'
+// axios.defaults.withCredentials = true
+// axios.defaults.crossDomain = true
+// axios.defaults.headers.post['Content-Type'] = 'text/plain'
+axios.interceptors.request.use(config => {
+  console.log(config)
+  config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

@@ -11,22 +11,12 @@
       <!-- 搜索与添加区 -->
       <Row :gutter="50">
         <iCol :span="7">
-          <iInput
-            placeholder="请输入内容"
-            v-model="queryInfo.query"
-            @on-clear="getItemList"
-          >
-            <iButton
-              slot="append"
-              icon="ios-search-outline"
-              @click="getItemList"
-            ></iButton>
+          <iInput placeholder="请输入内容" v-model="queryInfo.query" @on-clear="getItemList">
+            <iButton slot="append" icon="ios-search-outline" @click="getItemList"></iButton>
           </iInput>
         </iCol>
         <iCol :offset="13" :span="4">
-          <iButton type="primary" @click="addDialogVisible = true"
-            >发布求购信息</iButton
-          >
+          <iButton type="primary" @click="addDialogVisible = true">发布求购信息</iButton>
         </iCol>
       </Row>
 
@@ -40,6 +30,17 @@
         no-data-text="这里空空如也~"
       >
         <template slot-scope="{ row, index }" slot="action">
+          <!-- 详情 -->
+          <Tooltip effect="dark" content="详情" placement="top">
+            <iButton
+              content="详情"
+              type="primary"
+              icon="md-cube"
+              size="default"
+              class="modify"
+              @click="showDetail(index)"
+            ></iButton>
+          </Tooltip>
           <!-- 修改 -->
           <Tooltip effect="dark" content="修改" placement="top">
             <iButton
@@ -58,6 +59,7 @@
               type="error"
               icon="ios-trash-outline"
               size="default"
+              @click="delItem(index)"
             ></iButton>
           </Tooltip>
         </template>
@@ -79,26 +81,12 @@
     </Card>
 
     <!-- 发布求购的对话框 -->
-    <Modal
-      title="发布求购信息"
-      v-model="addDialogVisible"
-      @close="addDialogClosed"
-    >
+    <Modal title="发布求购信息" v-model="addDialogVisible" @close="addDialogClosed">
       <!-- 内容主体区 -->
-      <Form
-        ref="addFormRef"
-        :model="addForm"
-        :rules="addFormRules"
-        :label-width="125"
-      >
-        <FormItem label="物品类型" prop="type">
-          <Select v-model="addForm.type" style="width:200px" clearable>
-            <Option
-              v-for="item in typeList"
-              :value="item.value"
-              :key="item.value"
-              >{{ item.label }}</Option
-            >
+      <Form ref="addFormRef" :model="addForm" :rules="addFormRules" :label-width="125">
+        <FormItem label="物品类型" prop="category">
+          <Select v-model="addForm.category" style="width:200px" clearable>
+            <Option v-for="item in typeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
         <FormItem label="物品名称" prop="name">
@@ -108,26 +96,22 @@
           <iInput v-model="addForm.lowestPrice" clearable></iInput>
         </FormItem>
         <FormItem label="物品最高价格" prop="highestPrice">
-          <iInput v-model="editForm.highestPrice"></iInput>
+          <iInput v-model="addForm.highestPrice"></iInput>
         </FormItem>
         <FormItem label="物品描述" prop="description">
           <iInput v-model="addForm.description" clearable></iInput>
         </FormItem>
-        <FormItem label="物品图片" prop="photo">
+        <FormItem label="物品图片" prop="pictures">
           <!-- <iInput v-model="addForm.photo"></iInput> -->
           <Upload
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//10.128.216.38:8080/image/upload"
+            action="//192.168.137.196:8080/picture/upload"
             :on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
-              <Icon
-                type="ios-cloud-upload"
-                size="52"
-                style="color: #3399ff"
-              ></Icon>
+              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
               <p>您可以点击选择图片或者直接拖拽</p>
             </div>
           </Upload>
@@ -140,6 +124,13 @@
       </span>
     </Modal>
 
+    <!-- 详情的对话框 -->
+    <Modal title="查看物品详情" v-model="detailDialogVisible">
+      <p>创建时间:{{itemDetail.createTime}}</p>
+      <p>修改时间:{{itemDetail.modifiedTime}}</p>
+      <p>详情:{{itemDetail.description}}</p>
+    </Modal>
+
     <!-- 修改求购的对话框 -->
     <Modal title="修改求购物品的信息" v-model="editDialogVisible">
       <Form
@@ -149,14 +140,9 @@
         :label-width="125"
         @close="editDialogClosed"
       >
-        <FormItem label="物品类型" prop="type">
-          <Select v-model="editForm.type" style="width:200px" clearable>
-            <Option
-              v-for="item in typeList"
-              :value="item.value"
-              :key="item.value"
-              >{{ item.label }}</Option
-            >
+        <FormItem label="物品类型" prop="category">
+          <Select v-model="editForm.category" style="width:200px" clearable>
+            <Option v-for="item in typeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
         <FormItem label="物品名称" prop="name">
@@ -177,15 +163,11 @@
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//image/upload"
+            action="//192.168.137.196:8080/picture/upload"
             @on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
-              <Icon
-                type="ios-cloud-upload"
-                size="52"
-                style="color: #3399ff"
-              ></Icon>
+              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
               <p>您可以点击选择图片或者直接拖拽</p>
             </div>
           </Upload>
@@ -201,23 +183,25 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 获取物品列表的参数对象
       queryInfo: {
-        query: '',
+        query: "",
         // 当前的页数
-        pagenum: 1,
+        pageNum: 1,
         // 当前每页显示多少条数据
-        pagesize: 2
+        pageSize: 10
       },
       itemList: [
         {
-          type: '电子类',
-          name: '笔记本',
+          category: "电子类",
+          name: "笔记本",
           lowestPrice: 10,
           highestPrice: 20,
-          state: '待购'
+          description: "abook",
+          state: "待购",
+          pictures: null
         }
       ],
       total: 100,
@@ -225,192 +209,227 @@ export default {
       addDialogVisible: false,
       columns: [
         {
-          type: 'index'
+          type: "index"
         },
         {
-          title: '物品类型',
-          key: 'type'
+          title: "物品类型",
+          key: "category"
         },
         {
-          title: '物品名称',
-          key: 'name'
+          title: "物品名称",
+          key: "name"
         },
         {
-          title: '最低价',
-          key: 'lowestPrice'
+          title: "最低价",
+          key: "lowestPrice"
         },
         {
-          title: '最高价',
-          key: 'highestPrice'
+          title: "最高价",
+          key: "highestPrice"
         },
         {
-          title: '状态',
-          key: 'state'
+          title: "状态",
+          key: "state"
         },
         {
-          title: '操作',
-          slot: 'action'
+          title: "操作",
+          slot: "action",
+          width: 175
         }
       ],
       //   添加的表单数据
       addForm: {
-        type: '',
-        name: '',
-        lowestPrice: '',
-        isFixed: false,
-        endDate: '',
-        description: '',
-        photo: ''
+        category: "电子类",
+        name: "笔记本",
+        lowestPrice: "10",
+        highestPrice: "20",
+        description: "abook",
+        state: "待购",
+        pictures: []
       },
       //   添加表单的验证规则对象
       addFormRules: {
-        type: [{ required: true, message: '请选择物品类型', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入物品名称', trigger: 'blur' }],
+        category: [
+          { required: true, message: "请选择物品类型", trigger: "blur" }
+        ],
+        name: [{ required: true, message: "请输入物品名称", trigger: "blur" }],
         lowestPrice: [
           {
             required: true,
-            message: '请输入物品的最低求购价格',
-            trigger: 'blur'
+            message: "请输入物品的最低求购价格",
+            trigger: "blur"
           }
         ],
         highestPrice: [
           {
             required: true,
-            message: '请输入物品的最高求购价格',
-            trigger: 'blur'
+            message: "请输入物品的最高求购价格",
+            trigger: "blur"
           }
         ]
+      },
+      detailDialogVisible: false,
+      itemDetail: {
+        createTime: "",
+        modifiedTime: "",
+        detail: ""
       },
       editDialogVisible: false,
       //   查询到的物品对象
       editForm: {
-        type: '',
-        name: '',
-        lowestPrice: '',
-        highestPrice: '',
-        description: '',
-        photo: ''
+        // category: "",
+        // name: "",
+        // lowestPrice: "",
+        // highestPrice: "",
+        // description: "",
+        // photo: ""
       },
       // 修改表单的验证规则对象
       editFormRules: {
-        type: [{ required: true, message: '请选择物品类型', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入物品名称', trigger: 'blur' }],
+        category: [
+          { required: true, message: "请选择物品类型", trigger: "blur" }
+        ],
+        name: [{ required: true, message: "请输入物品名称", trigger: "blur" }],
         lowestPrice: [
           {
             required: true,
-            message: '请输入物品的最低求购价格',
-            trigger: 'blur'
+            message: "请输入物品的最低求购价格",
+            trigger: "blur"
           }
         ],
         highestPrice: [
           {
             required: true,
-            message: '请输入物品的最高求购价格',
-            trigger: 'blur'
+            message: "请输入物品的最高求购价格",
+            trigger: "blur"
           }
         ]
       },
       typeList: [
         {
-          value: '电子类',
-          label: '电子类'
+          value: "电子类",
+          label: "电子类"
         },
         {
-          value: '日常用品类',
-          label: '日常用品类'
+          value: "日常用品类",
+          label: "日常用品类"
         },
         {
-          value: '书籍类',
-          label: '书籍类'
+          value: "书籍类",
+          label: "书籍类"
         }
       ]
-    }
+    };
   },
-  created () {
-    this.getItemList()
+  created() {
+    this.getItemList();
   },
   methods: {
     // 获取求购物品列表
-    async getItemList () {
-      // const { data: res } = await this.$http.get('users', {
-      //   params: this.queryInfo
-      // })
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error('获取用户列表失败!')
-      // }
-      // this.userList = res.data.users
-      // this.total = res.data.total
+    async getItemList() {
+      const { data: res } = await this.$http.get("home/item/demand", {
+        params: this.queryInfo
+      });
+      if (res.code !== 200) {
+        return this.$message.error("获取用户列表失败!");
+      }
+      this.itemList = res.data.content;
+      this.total = res.data.totalPages;
       // console.log(res)
     },
     // 监听pagesize改变的事件
-    handleSizeChange (newSize) {
-      this.queryInfo.pagesize = newSize
-      this.getItemList()
+    handleSizeChange(newSize) {
+      this.queryInfo.pageSize = newSize;
+      this.getItemList();
     },
     // 监听页码值改变的事件
-    handleCurrentChange (newPage) {
-      this.queryInfo.pagenum = newPage
-      this.getItemList()
+    handleCurrentChange(newPage) {
+      this.queryInfo.pageNum = newPage;
+      this.getItemList();
     },
     // 监听添加对话框的关闭
-    addDialogClosed () {
-      this.$refs.addFormRef.resetFields()
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields();
     },
-    upLoadImg (response, file, fileList) {
-      console.log(response)
+    upLoadImg(response, file, fileList) {
+      // console.log(response);
+      // console.log(file);
+      console.log(fileList);
+      this.addForm.pictures = [];
+      for (var i = 0; i < fileList.length; i++) {
+        this.addForm.pictures.push({ pid: fileList[i].response.data.pid });
+      }
     },
     // 点击按钮添加求购信息
-    addItem () {
+    addItem() {
       this.$refs.addFormRef.validate(async valid => {
-        if (!valid) return
+        if (!valid) return;
         // 发起请求
-        const { data: res } = await this.$http.post('users', this.addForm)
+        const { data: res } = await this.$http.post(
+          "item/demand/add",
+          this.addForm,
+          {
+            headers: { "Content-Type": "text/plain" }
+          }
+        );
 
-        if (res.status !== 201) {
-          this.$message.error('添加用户失败')
+        if (res.code !== 200) {
+          this.$message.error("添加失败");
         }
 
-        this.$message.success('添加用户成功')
-        this.addDialogVisible = false
-        this.getItemList()
-      })
+        this.$message.success("添加成功");
+        this.addDialogVisible = false;
+        this.getItemList();
+      });
+    },
+    showDetail(id) {
+      this.itemDetail = this.itemList[id];
+      this.detailDialogVisible = true;
     },
     // 展示编辑物品信息的对话框
-    async showEditDialog (id) {
+    showEditDialog(id) {
+      this.editForm = this.itemList[id];
       // const { data: res } = await this.$http.get('users/' + id)
       // if (res.meta.status !== 200) {
       //   return this.$message.error('查询用户信息失败！')
       // }
       // this.editForm = res.data
-      this.editDialogVisible = true
+      this.editDialogVisible = true;
     },
     // 监听修改用户对话框的关闭事件
-    editDialogClosed () {
-      this.$refs.editFormRef.resetFields()
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
     },
     // 修改物品信息并提交
-    editItem () {
+    editItem() {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return
-        const { data: res } = this.$http.put('users/' + this.editForm.id, {
+        if (!valid) return;
+        const { data: res } = this.$http.post("users/" + this.editForm.id, {
           email: this.editFrom.email,
           mobile: this.editForm.mobile
-        })
+        });
 
-        if (res.meta.status !== 200) {
-          return this.$message.error('更新用户信息失败')
+        if (res.code !== 200) {
+          return this.$message.error("更新失败");
         }
 
         // 关闭对话框
-        this.editDialogVisible = false
+        this.editDialogVisible = false;
         // 刷新数据列表
-        this.getItemList()
+        this.getItemList();
         // 提示修改成功
-        this.$message.success('更新用户信息成功')
-      })
+        this.$message.success("更新成功");
+      });
+    },
+    delItem(index) {
+      // const { data: res } = this.$http.post();
+      // if (res.code !== 200) return this.$Message.error("删除失败");
+      this.itemList.splice(index, 1);
+      this.$Message.success("删除成功");
+      this.getItemList();
     }
   }
-}
+};
 </script>
 
 <style scoped>

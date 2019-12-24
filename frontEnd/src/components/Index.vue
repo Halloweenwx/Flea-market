@@ -17,11 +17,7 @@
         </div>
         <!-- 内容 -->
         <div class="items-content">
-          <div
-            class="items-item"
-            v-for="(item, index) in sellList"
-            :key="index"
-          >
+          <div class="items-item" v-for="(item, index) in sellList" :key="index">
             <div class="items-item-img">
               <router-link to="/detail">
                 <img :src="item.img" />
@@ -84,32 +80,45 @@
 </template>
 
 <script>
-import Navi from '../components/Navi'
-import { mapActions, mapState } from 'vuex'
+import Navi from "../components/Navi";
+// import { mapActions, mapState } from 'vuex'
 export default {
-  data () {
-    return {}
+  data() {
+    return {
+      buyList: null,
+      sellList: null
+    };
   },
   methods: {
-    ...mapActions(['loadSellList']),
-    searchItems (value) {
-      this.$router.push('/search')
+    // ...mapActions(['loadSellList']),
+    loadSellList() {
+      const { data: res } = this.$http.get("fore/item/idle");
+      if (res.code !== 200) return this.$Message.error("获取待售物品失败");
+      this.sellList = res.data;
+    },
+    loadBuyList() {
+      const { data: res } = this.$http.get("fore/item/demand");
+      if (res.code !== 200) return this.$Message.error("获取求购物品失败");
+      this.buyList = res.data;
+    },
+    searchItems(value) {
+      this.$router.push("/search");
     }
   },
-  created () {
-    this.loadSellList()
+  created() {
+    this.loadSellList();
   },
-  computed: {
-    ...mapState(['sellList', 'buyList'])
-  },
+  // computed: {
+  //   ...mapState(['sellList', 'buyList'])
+  // },
   components: {
     Navi
   }
-}
+};
 </script>
 
 <style scoped>
-@import '../assets/css/base.css';
+@import "../assets/css/base.css";
 /* itemList start */
 .content {
   width: 1008px;

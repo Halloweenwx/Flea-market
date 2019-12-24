@@ -30,6 +30,9 @@ export default new Vuex.Store({
     done(state) {
       state.registerStep = 0
     },
+    changeCartCoutn(state, count) {
+      state.cartCount = count
+    },
     SET_SECKILLS_INFO(state, sellList) {
       state.sellList = sellList
       state.buyList = sellList

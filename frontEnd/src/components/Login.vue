@@ -53,43 +53,35 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       loginForm: {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
         isCustomer: true
       },
       loginRuleRef: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          {
-            type: 'string',
-            min: 6,
-            message: '密码不能少于6位',
-            trigger: 'blur'
-          }
-        ]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
-    }
+    };
   },
   methods: {
-    login (name) {
+    login(name) {
       this.$refs[name].validate(async valid => {
-        if (!valid) return
-        const { data: res } = await this.$http.post('login', this.loginForm)
-        console.log(res)
-        if (res.code !== 200) return this.$message.error(res.msg)
-        this.$Message.success('登陆成功')
-        // window.sessionStorage.setItem('token', res.data.token)
-        // this.$router.push('/')
-      })
+        if (!valid) return;
+        const { data: res } = await this.$http.post("login", this.loginForm);
+        // console.log(res)
+        if (res.code !== 200) return this.$Message.error(res.msg);
+        this.$Message.success(res.msg);
+        window.sessionStorage.setItem("token", res.data.token);
+        this.$router.push("/");
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>
