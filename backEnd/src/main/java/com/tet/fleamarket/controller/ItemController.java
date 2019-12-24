@@ -1,10 +1,15 @@
 package com.tet.fleamarket.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tet.fleamarket.dao.ItemDao;
+import com.tet.fleamarket.entity.IdleItem;
 import com.tet.fleamarket.entity.Item;
+import com.tet.fleamarket.entity.User;
 import com.tet.fleamarket.service.ItemService;
+import com.tet.fleamarket.service.TokenService;
 import com.tet.fleamarket.util.Result;
 import com.tet.fleamarket.util.Status;
+import com.tet.fleamarket.util.TokenRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +24,11 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
+    @Autowired
+    ItemDao itemDao;
+    @Autowired
+    TokenService tokenService;
+
     @GetMapping("/item/{iid}")
     public Result fetch(@PathVariable String iid) {
         Status status;
@@ -32,8 +42,9 @@ public class ItemController {
         return new Result(status, itemFetched);
     }
 
-    @PostMapping("/item/add")
-    public Result add(@RequestBody() Item itemToAdd) {
+    @TokenRequired
+    @PostMapping("/item/idle/add")
+    public Result add(@RequestBody() IdleItem itemToAdd) {
         Status status;
         JSONObject res = new JSONObject();
         Item itemInBase = itemService.getItemByName(itemToAdd.getName());
@@ -46,5 +57,17 @@ public class ItemController {
             itemService.addItem(itemToAdd);
         }
         return new Result(status, res);
+    }
+
+    @TokenRequired
+    @PostMapping("/home/fetch/uid")
+    public Result fetchByUid(){
+//        Status status;
+//        httpServletRequest.getCookies();
+//        User user = tokenService.getUserFromCookies()
+//
+//        itemDao.findAllByBelong()
+
+        return new Result();
     }
 }

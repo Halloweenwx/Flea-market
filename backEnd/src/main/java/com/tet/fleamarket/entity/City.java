@@ -41,7 +41,7 @@ public class City {
         return code;
     }
 
-    @JsonProperty(value = "city")
+    @JsonProperty(value = "value")
     public void setCode(String code) {
         this.code = code;
     }

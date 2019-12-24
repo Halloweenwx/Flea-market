@@ -26,7 +26,10 @@ public class Customer extends User {
     @JoinColumns({@JoinColumn(name = "member_level", referencedColumnName = "enLevel")})
     private MemberLevel memberLevel;
 
-    @ElementCollection
+    /**
+     * 懒加载错误
+     */
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(joinColumns = @JoinColumn(name = "uid"))
     private Set<String> address;
 

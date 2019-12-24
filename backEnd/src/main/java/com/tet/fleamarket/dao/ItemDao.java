@@ -2,6 +2,8 @@ package com.tet.fleamarket.dao;
 
 
 import com.tet.fleamarket.entity.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +19,5 @@ import org.springframework.stereotype.Repository;
 public interface ItemDao extends JpaRepository<Item, String> {
     Item findByName(String name);
     Item findByIid(String iid);
+    Page<Item> findAllByBelong(Pageable pageable, String belong);
 }

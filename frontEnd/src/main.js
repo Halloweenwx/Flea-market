@@ -7,6 +7,7 @@ import router from './router'
 import store from './store'
 
 // 配置请求的根路径
+<<<<<<< HEAD
 axios.defaults.baseURL = 'http://192.168.137.196:8080'
 // axios.defaults.withCredentials = true
 // axios.defaults.crossDomain = true
@@ -16,6 +17,15 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })
+=======
+// axios.defaults.baseURL = 'http://10.128.216.38:8080'
+axios.defaults.baseURL = 'http://localhost:8080'
+// axios.interceptors.request.use(config => {
+//   console.log(config)
+//   config.headers.Authorization = window.sessionStorage.getItem('token')
+//   return config
+// })
+>>>>>>> 3aae9f04855a004601e796a82c95380506d5eec5
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

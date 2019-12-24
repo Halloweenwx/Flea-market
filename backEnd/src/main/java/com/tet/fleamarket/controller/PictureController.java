@@ -45,7 +45,6 @@ public class PictureController {
         try {
             Picture pictureToUpload = new Picture();
             pictureToUpload.setFilename(file.getOriginalFilename());
-//            System.out.println(filename);
             pictureSaved = pictureDao.save(pictureToUpload);
             pictureSaved.setFileBin(file.getBytes());
             pictureOss.save(pictureSaved);

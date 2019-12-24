@@ -1,5 +1,6 @@
 package com.tet.fleamarket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,6 +51,8 @@ public class User {
     private City city;
 
     @Transient
+    @JsonIgnore
     private Boolean isCustomer;
+
 
 }

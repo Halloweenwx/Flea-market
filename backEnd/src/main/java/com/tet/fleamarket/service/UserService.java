@@ -28,15 +28,24 @@ public class UserService {
     private int saltLen;
 
     public User getUserByUsername(String username) {
-        if(!username.isEmpty()) {
+        if (!username.isEmpty()) {
             return userDao.findByUsername(username);
-        }else{
+        } else {
+            return new User();
+        }
+    }
+
+    public User getUserByUid(String uid) {
+        if (!uid.isEmpty()) {
+            System.out.println(userDao.findByUid(uid));
+            return userDao.findByUid(uid);
+        } else {
             return new User();
         }
     }
 
     public Boolean usernameExists(String username) {
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
             return false;
         }
         User userInDataBase = getUserByUsername(username);
@@ -50,7 +59,7 @@ public class UserService {
         if (user != null) {
             logger.info(user.getUsername());
             return !user.getUsername().isEmpty();
-        }else{
+        } else {
             logger.error("用户不合法");
             return false;
         }
@@ -75,4 +84,19 @@ public class UserService {
         return userDao.findByUsername(userToAdd.getUsername()).getUid();
     }
 
+    public Boolean update(User updateInfo) {
+        boolean updated = false;
+        User userToUpdate = getUserByUid(updateInfo.getUid());
+        if (!updateInfo.getUsername().equals(userToUpdate.getUsername())) {
+            userToUpdate.setUsername(updateInfo.getUsername());
+            updated = true;
+        } else if (updateInfo.getPhone() != null && !userToUpdate.getPhone().equals(updateInfo.getPhone())) {
+            userToUpdate.setPhone(updateInfo.getPhone());
+            updated = true;
+        } else if (updateInfo.getCity() != null && userToUpdate.getCity() != updateInfo.getCity()) {
+            userToUpdate.setCity(updateInfo.getCity());
+        }
+        userDao.save(userToUpdate);
+        return updated;
+    }
 }

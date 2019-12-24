@@ -7,18 +7,19 @@ import com.tet.fleamarket.service.TokenService;
 import com.tet.fleamarket.service.UserService;
 import com.tet.fleamarket.util.Result;
 import com.tet.fleamarket.util.Status;
+import com.tet.fleamarket.util.TokenRequired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.tet.fleamarket.util.Encryption.randomNumber;
+import static com.tet.fleamarket.util.status.FetchStatus.FATCH_SUCCESS;
 import static com.tet.fleamarket.util.status.UserStatus.*;
 
 /**
@@ -62,7 +63,6 @@ public class UserController {
                 cookie.setPath("/");
                 cookie.setMaxAge(3600);
                 response.addCookie(cookie);
-//                data.put("token",token);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,6 +90,12 @@ public class UserController {
 //        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * 获取验证码
+     *
+     * @param res
+     * @return
+     */
     @PostMapping("/register/phone")
     public Result register(@RequestBody() JSONObject res) {
         JSONObject data = new JSONObject();
@@ -104,6 +110,34 @@ public class UserController {
             logger.error("未知错误");
         }
         return new Result(status, data);
+    }
+
+    @TokenRequired
+    @GetMapping("/home/info")
+    public Result userInfo(HttpServletRequest httpServletRequest) {
+        Cookie[] cookies = httpServletRequest.getCookies();
+        String token = tokenService.getTokenFromCookies(cookies);
+        User user = tokenService.getUserFromToken(token);
+        Status status;
+        User userInBase = userService.getUserByUid(user.getUid());
+        status = FATCH_SUCCESS;
+        return new Result(status, userInBase);
+    }
+
+    @TokenRequired
+    @PostMapping("/home/update")
+    public Result update(HttpServletRequest httpServletRequest, @RequestBody() User updateUserInfo, @RequestParam(required = false) String tuid) {
+//        Cookie[] cookies = httpServletRequest.getCookies();
+//        String token = tokenService.getTokenFromCookies(cookies);
+//        User user = tokenService.getUserFromToken(token);
+        User user = userService.getUserByUid(tuid);
+        Status status = BAD_REQUEST;
+        updateUserInfo.setUid(user.getUid());
+        if (userService.update(updateUserInfo)) {
+            status = UPDATE_SUCCESS;
+        }
+
+        return new Result(status);
     }
 //    @GetMapping("/list")
 //    public ResponseEntity list() {

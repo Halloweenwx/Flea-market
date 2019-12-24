@@ -11,18 +11,15 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public enum UserStatus implements Status {
+public enum TokenStatus implements Status {
     /**
      * 用户登录/注册状态
      */
-    SUCCESS(200,"请求成功"),
-    UPDATE_SUCCESS(200,"资料修改成功"),
-    LOGIN_SUCCESS(200, "登陆成功"),
-    REGISTER_SUCCESS(200, "注册成功"),
-    WRONG_PASSWORD(400, "密码错误"),
-    USER_NOT_FOUND(400, "无法找到用户"),
-    ALREADY_EXISTS(400,"当前用户名已存在"),
-    BAD_REQUEST(400, "无效请求");
+    TOKEN_VALID(200,"token检验合法"),
+    TOKEN_NOT_FOUND(404,"无token，请重新登录"),
+    TOKEN_INVALID(400,"token错误"),
+    USER_NOT_FOUND(400,"用户不存在，请重新登录"),
+    TOKEN_OVERDUE(400, "token过期");
 
     private Integer code;
     private String msg;

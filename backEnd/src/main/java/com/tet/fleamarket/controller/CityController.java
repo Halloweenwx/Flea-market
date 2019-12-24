@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tet.fleamarket.dao.CityDao;
 import com.tet.fleamarket.entity.City;
 import com.tet.fleamarket.util.Result;
+import com.tet.fleamarket.util.TokenRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

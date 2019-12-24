@@ -1,4 +1,7 @@
-#thymeleaf
+# server
+server:
+  port: 8080
+
 spring:
 #  thymeleaf:
 #    mode: HTML
@@ -7,11 +10,12 @@ spring:
 #      content-type: text/html
 #    cache:
 #      false
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
-#dabtabase
+  #dabtabase
   datasource:
 #    https://www.jianshu.com/p/7e9247c0b81a
     url: jdbc:mysql://101.200.150.13:3306/test?maxPoolSize=256&serverTimezone=Asia/Shanghai
@@ -35,7 +39,6 @@ values:
   service:
     UserService:
       saltLen: 10
-
     tokenService:
       expireSecond: 172800
 
