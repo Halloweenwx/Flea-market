@@ -368,9 +368,6 @@ export default {
         const { data: res } = await this.$http.post(
           "item/demand/add",
           this.addForm,
-          {
-            headers: { "Content-Type": "text/plain" }
-          }
         );
 
         if (res.code !== 200) {

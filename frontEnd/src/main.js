@@ -11,11 +11,11 @@ axios.defaults.baseURL = 'http://192.168.137.196:8080'
 // axios.defaults.withCredentials = true
 // axios.defaults.crossDomain = true
 // axios.defaults.headers.post['Content-Type'] = 'text/plain'
-// axios.interceptors.request.use(config => {
-//   console.log(config)
-//   config.headers.Authorization = window.sessionStorage.getItem('token')
-//   return config
-// })
+axios.interceptors.request.use(config => {
+  console.log(config)
+  config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

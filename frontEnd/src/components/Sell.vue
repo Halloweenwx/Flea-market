@@ -137,6 +137,7 @@
       <p>创建时间:{{itemDetail.createTime}}</p>
       <p>修改时间:{{itemDetail.modifiedTime}}</p>
       <p>详情:{{itemDetail.detail}}</p>
+      <img :src="itemDetail.pictures[0].url" />
     </Modal>
 
     <!-- 修改出售物品的对话框 -->
@@ -279,14 +280,24 @@ export default {
           { required: true, message: "请选择是否为一口价", trigger: "blur" }
         ],
         endDate: [
-          { required: true, message: "请选择竞价结束日期", trigger: "blur" }
+          {
+            required: true,
+            type: "date",
+            message: "请选择竞价结束日期",
+            trigger: "blur"
+          }
         ]
       },
       detailDialogVisible: false,
       itemDetail: {
         createTime: "",
         modifiedTime: "",
-        description: ""
+        description: "",
+        pictures: [
+          {
+            url: "123"
+          }
+        ]
       },
       editDialogVisible: false,
       //   查询到的物品
@@ -371,6 +382,7 @@ export default {
     },
     // 点击按钮添加求购信息
     addItem() {
+      console.log(this.addForm);
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return;
         // 发起请求
