@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -24,8 +25,8 @@ import java.util.Set;
 public class Customer extends User {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({@JoinColumn(name = "member_level", referencedColumnName = "enLevel")})
+    @ColumnDefault(value = "ordinary")
     private MemberLevel memberLevel;
-
     /**
      * 懒加载错误
      */

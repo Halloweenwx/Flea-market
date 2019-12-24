@@ -11,18 +11,11 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public enum UserStatus implements Status {
+public enum DealStatus implements Status {
     /**
-     * 用户登录/注册状态
+     * 购买状态
      */
-    SUCCESS(200,"请求成功"),
-    UPDATE_SUCCESS(200,"资料修改成功"),
-    NO_UPDATE(200,"无修改"),
-    LOGIN_SUCCESS(200, "登陆成功"),
-    REGISTER_SUCCESS(200, "注册成功"),
-    WRONG_PASSWORD(400, "密码错误"),
-    USER_NOT_FOUND(400, "无法找到用户"),
-    ALREADY_EXISTS(400,"当前用户名已存在"),
+    DEAL_SUCCESS(200,"购买成功"),
     BAD_REQUEST(400, "无效请求");
 
     private Integer code;

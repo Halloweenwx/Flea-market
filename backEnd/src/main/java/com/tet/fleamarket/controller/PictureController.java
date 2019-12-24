@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.tet.fleamarket.util.status.FetchStatus.BAD_REQUEST;
-import static com.tet.fleamarket.util.status.FetchStatus.FATCH_SUCCESS;
+import static com.tet.fleamarket.util.status.FetchStatus.FETCH_SUCCESS;
 
 /**
  * @author Hou Weiying
@@ -31,7 +31,7 @@ public class PictureController {
         Picture pictureFetched = new Picture();
         try {
             pictureFetched = pictureOss.findByPid(pid);
-            status = FATCH_SUCCESS;
+            status = FETCH_SUCCESS;
         } catch (Exception e) {
             status = BAD_REQUEST;
         }
@@ -48,7 +48,7 @@ public class PictureController {
             pictureSaved = pictureDao.save(pictureToUpload);
             pictureSaved.setFileBin(file.getBytes());
             pictureOss.save(pictureSaved);
-            status = FATCH_SUCCESS;
+            status = FETCH_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
         }

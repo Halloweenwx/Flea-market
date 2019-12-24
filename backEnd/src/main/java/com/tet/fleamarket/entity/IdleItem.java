@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
 
@@ -23,7 +21,7 @@ import java.sql.Timestamp;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IdleItem extends Item{
-    private Boolean priceFixed;
+    private boolean priceFixed;
     private Double startPrice;
     private Timestamp endDate;
 }

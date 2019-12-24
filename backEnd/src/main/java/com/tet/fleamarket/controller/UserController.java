@@ -14,12 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.tet.fleamarket.util.Encryption.randomNumber;
-import static com.tet.fleamarket.util.status.FetchStatus.FATCH_SUCCESS;
+import static com.tet.fleamarket.util.status.FetchStatus.FETCH_SUCCESS;
 import static com.tet.fleamarket.util.status.UserStatus.*;
 
 /**
@@ -34,6 +33,7 @@ public class UserController {
     @Autowired
     private TokenService tokenService;
 
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/login")
@@ -42,12 +42,13 @@ public class UserController {
         Status status = BAD_REQUEST;
         System.out.println(loginUser.getUsername() + ":" + loginUser.getPassword());
 
-        if (loginUser.getIsCustomer()) {
-            loginUser = new Customer(loginUser);
-        } else {
-            loginUser = new Administrator(loginUser);
-        }
         try {
+            if (loginUser.getIsCustomer()) {
+                loginUser = new Customer(loginUser);
+            } else {
+                loginUser = new Administrator(loginUser);
+            }
+
             if (!userService.usernameExists(loginUser.getUsername())) {
                 //用户名不存在
                 status = USER_NOT_FOUND;
@@ -59,10 +60,11 @@ public class UserController {
                 status = LOGIN_SUCCESS;
                 User userInBase = userService.getUserByUsername(loginUser.getUsername());
                 String token = tokenService.genUserToken(userInBase);
-                Cookie cookie = new Cookie("token", token);
-                cookie.setPath("/");
-                cookie.setMaxAge(3600);
-                response.addCookie(cookie);
+
+//                ResponseCookie cookie = ResponseCookie.from("token", token).path("/").sameSite(null).secure(true).build();
+//                response.addHeader("Set-Cookie", cookie.toString());
+//                response.addHeader("Authorization", token);
+                data.put("token", token);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +85,7 @@ public class UserController {
         } else {
             //注册成功
             status = REGISTER_SUCCESS;
-            userService.addUser(registerCustomer);
+            userService.addCustomerAndCart(registerCustomer);
         }
         logger.info(registerCustomer.getUsername() + status.toString());
         return new Result(status, data);
@@ -115,23 +117,21 @@ public class UserController {
     @TokenRequired
     @GetMapping("/home/info")
     public Result userInfo(HttpServletRequest httpServletRequest) {
-        Cookie[] cookies = httpServletRequest.getCookies();
-        String token = tokenService.getTokenFromCookies(cookies);
+        String token = httpServletRequest.getHeader("Authorization");
         User user = tokenService.getUserFromToken(token);
         Status status;
         User userInBase = userService.getUserByUid(user.getUid());
-        status = FATCH_SUCCESS;
+        status = FETCH_SUCCESS;
         return new Result(status, userInBase);
     }
 
     @TokenRequired
     @PostMapping("/home/update")
-    public Result update(HttpServletRequest httpServletRequest, @RequestBody() User updateUserInfo, @RequestParam(required = false) String tuid) {
-//        Cookie[] cookies = httpServletRequest.getCookies();
-//        String token = tokenService.getTokenFromCookies(cookies);
-//        User user = tokenService.getUserFromToken(token);
-        User user = userService.getUserByUid(tuid);
-        Status status = BAD_REQUEST;
+    public Result update(HttpServletRequest httpServletRequest, @RequestBody() User updateUserInfo) {
+        String token = httpServletRequest.getHeader("Authorization");
+        User user = tokenService.getUserFromToken(token);
+
+        Status status = NO_UPDATE;
         updateUserInfo.setUid(user.getUid());
         if (userService.update(updateUserInfo)) {
             status = UPDATE_SUCCESS;
@@ -139,6 +139,8 @@ public class UserController {
 
         return new Result(status);
     }
+
+
 //    @GetMapping("/list")
 //    public ResponseEntity list() {
 //        System.out.println(userDao.findById("hi"));

@@ -18,9 +18,10 @@ spring:
   #dabtabase
   datasource:
 #    https://www.jianshu.com/p/7e9247c0b81a
-    url: jdbc:mysql://101.200.150.13:3306/test?maxPoolSize=256&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://101.200.150.13:3306/test?maxPoolSize=256&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
     username: tet
     password: mysqltet
+    hikari.max-lifetime: 30000 #30000秒
   jpa:
     properties:
       hibernate:

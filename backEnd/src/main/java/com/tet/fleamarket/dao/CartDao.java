@@ -1,12 +1,11 @@
 package com.tet.fleamarket.dao;
 
 
-import com.tet.fleamarket.entity.Item;
-import com.tet.fleamarket.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.tet.fleamarket.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
 
 /**
  * @author Hou Weiying
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Repository;
  * interface **Dao extends JpaRepository<**, id>
  */
 @Repository
-public interface ItemDao extends JpaRepository<Item, String> {
-
+public interface CartDao extends JpaRepository<Cart, String> {
+    Cart findCartByCustomer_Uid(String uid);
 
 }
