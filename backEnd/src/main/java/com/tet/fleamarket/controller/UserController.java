@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +32,7 @@ public class UserController {
 
     @Autowired
     private TokenService tokenService;
+
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -63,7 +63,8 @@ public class UserController {
 
 //                ResponseCookie cookie = ResponseCookie.from("token", token).path("/").sameSite(null).secure(true).build();
 //                response.addHeader("Set-Cookie", cookie.toString());
-                response.addHeader("Authorization", token);
+//                response.addHeader("Authorization", token);
+                data.put("token", token);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,7 +85,7 @@ public class UserController {
         } else {
             //注册成功
             status = REGISTER_SUCCESS;
-            userService.addUser(registerCustomer);
+            userService.addCustomerAndCart(registerCustomer);
         }
         logger.info(registerCustomer.getUsername() + status.toString());
         return new Result(status, data);

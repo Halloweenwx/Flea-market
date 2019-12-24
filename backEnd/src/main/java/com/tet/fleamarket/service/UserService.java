@@ -1,6 +1,9 @@
 package com.tet.fleamarket.service;
 
+import com.tet.fleamarket.dao.CartDao;
 import com.tet.fleamarket.dao.UserDao;
+import com.tet.fleamarket.entity.Cart;
+import com.tet.fleamarket.entity.Customer;
 import com.tet.fleamarket.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,8 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private CartDao cartDao;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -56,11 +61,10 @@ public class UserService {
     }
 
     public Boolean userIsLegal(User user) {
-        if (user != null) {
-            logger.info(user.getUsername());
+        if (user != null && user.getUsername() != null && user.getPhone() != null) {
             return !user.getUsername().isEmpty() && user.getPhone().length() <= 11;
         } else {
-            logger.error("用户不合法");
+            logger.info("用户不存在");
             return false;
         }
     }
@@ -77,11 +81,14 @@ public class UserService {
         return false;
     }
 
-    public String addUser(User userToAdd) {
+    public String addCustomerAndCart(User userToAdd) {
         userToAdd.setSalt(randomString(saltLen));
         userToAdd.setPassword(getMD5(userToAdd.getPassword() + userToAdd.getSalt()));
-        userDao.save(userToAdd);
-        return userDao.findByUsername(userToAdd.getUsername()).getUid();
+        Customer customer = new Customer(userDao.save(userToAdd));
+        Cart cart = new Cart();
+        cart.setCustomer(customer);
+        cartDao.save(cart);
+        return customer.getUid();
     }
 
     public Boolean update(User updateInfo) {

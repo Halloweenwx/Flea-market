@@ -24,11 +24,11 @@ public class Deal {
     @Column(length = 36, unique = true)
     private String did;
     @ManyToOne
-    @JoinColumns({@JoinColumn(name = "reqester", referencedColumnName = "uid")})
-    private Customer requester;
+    @JoinColumns({@JoinColumn(name = "payer", referencedColumnName = "uid")})
+    private Customer payer;
     @ManyToOne
-    @JoinColumns({@JoinColumn(name = "responder", referencedColumnName = "uid")})
-    private Customer responder;
+    @JoinColumns({@JoinColumn(name = "owner", referencedColumnName = "uid")})
+    private Customer owner;
     private double dealPrice;
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP")

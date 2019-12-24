@@ -2,9 +2,6 @@ package com.tet.fleamarket.dao;
 
 
 import com.tet.fleamarket.entity.Cart;
-import com.tet.fleamarket.entity.City;
-import com.tet.fleamarket.entity.IdleItem;
-import com.tet.fleamarket.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

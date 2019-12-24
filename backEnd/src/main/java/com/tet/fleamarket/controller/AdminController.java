@@ -4,6 +4,7 @@ import com.tet.fleamarket.dao.UserDao;
 import com.tet.fleamarket.entity.User;
 import com.tet.fleamarket.util.Result;
 import com.tet.fleamarket.util.Status;
+import com.tet.fleamarket.util.TokenRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,7 @@ public class AdminController {
     @Autowired
     UserDao userDao;
 
+    @TokenRequired
     @GetMapping("/admin/user")
     public Result fetchUser(@RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {

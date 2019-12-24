@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,12 +30,12 @@ public class Item {
     @GenericGenerator(name = "system-uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(length = 36, unique = true)
     private String iid;
-    //不可设置为all，会导致save失败 https://www.jianshu.com/p/e8caafce5445
+    //不可设置为CascadeType.ALL，会导致save失败（persist)和误删除（remove） https://www.jianshu.com/p/e8caafce5445
     @ManyToOne
     // 将user对应值返回此处
     @JoinColumns({@JoinColumn(name = "belong", referencedColumnName = "uid")})
     private Customer belong;
-    @OneToOne
+    @OneToOne(cascade={CascadeType.MERGE})
     @JoinColumns({@JoinColumn(name = "category", referencedColumnName = "enCategory")})
     private Category category;
     private String name;
@@ -51,4 +52,5 @@ public class Item {
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp modifiedTime;
+    private double dealPrice;
 }

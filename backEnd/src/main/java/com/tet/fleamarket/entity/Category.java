@@ -25,4 +25,7 @@ public class Category {
     private String enCategory;
     private String cnCategory;
 
+    public Category(String enCategory) {
+        this.enCategory = enCategory;
+    }
 }

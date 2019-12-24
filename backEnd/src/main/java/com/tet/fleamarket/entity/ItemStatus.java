@@ -24,4 +24,7 @@ public class ItemStatus {
     private String enStatus;
     private String cnStatus;
 
+    public ItemStatus(String enStatus) {
+        this.enStatus = enStatus;
+    }
 }
