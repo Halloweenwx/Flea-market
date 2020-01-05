@@ -3,7 +3,7 @@
     <div class="login_box">
       <!-- 头像区域 -->
       <div class="avatar_box">
-        <img src="../../assets/logo.png" />
+        <img src="../../assets/logo.jpg" />
       </div>
       <!-- 登录表单区 -->
       <Form
@@ -23,8 +23,9 @@
         </FormItem>
         <!-- 按钮区域 -->
         <FormItem class="btns">
-          <iButton type="primary" @click="login">登录</iButton>
-          <iButton type="info" @click="resetLoginForm">重置</iButton>
+          <iButton type="primary" @click="login" class="btn">登录</iButton>
+          <iButton type="info" @click="resetLoginForm" class="btn">重置</iButton>
+          <iButton type="error" :to="`/`" class="btn">回到主页</iButton>
         </FormItem>
       </Form>
     </div>
@@ -64,8 +65,9 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
         const { data: res } = await this.$http.post("login", this.loginForm);
-        if (res.code !== 200) return this.$message.error("登陆失败");
-        this.$message.success("登陆成功");
+        if (res.code !== 200) return this.$Message.error("登陆失败");
+        window.sessionStorage.setItem("token", res.data.token);
+        this.$Message.success("登陆成功");
         // console.log(res)
         // window.sessionStorage.setItem('token', res.data.token)
         this.$router.push("/admin/home");
@@ -85,7 +87,6 @@ export default {
   min-height: 100%;
   height: auto;
 }
-
 .login_box {
   width: 450px;
   height: 300px;
@@ -96,7 +97,6 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-
 .avatar_box {
   height: 130px;
   width: 130px;
@@ -109,14 +109,12 @@ export default {
   transform: translate(-50%, -50%);
   background-color: #fff;
 }
-
 .avatar_box img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background-color: #eee;
 }
-
 .login_form {
   position: absolute;
   bottom: 0;
@@ -124,9 +122,11 @@ export default {
   padding: 0 20px;
   box-sizing: border-box;
 }
-
 .btns {
   display: flex;
   justify-content: flex-end;
+}
+.btn {
+  margin: 0 5px;
 }
 </style>

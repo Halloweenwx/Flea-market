@@ -126,9 +126,57 @@
 
     <!-- 详情的对话框 -->
     <Modal title="查看物品详情" v-model="detailDialogVisible">
-      <p>创建时间:{{itemDetail.createTime}}</p>
-      <p>修改时间:{{itemDetail.modifiedTime}}</p>
-      <p>详情:{{itemDetail.description}}</p>
+      <List>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品类型"
+            :description="detail.category"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品名称"
+            :description="detail.name"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品最低价格"
+            :description="detail.lowestPrice"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品最高价格"
+            :description="detail.highestPrice"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品描述"
+            :description="detail.description"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="创建时间"
+            :description="detail.createTime"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="修改时间"
+            :description="detail.modifiedTime"
+          />
+        </ListItem>
+      </List>
     </Modal>
 
     <!-- 修改求购的对话框 -->
@@ -200,7 +248,7 @@ export default {
           lowestPrice: 10,
           highestPrice: 20,
           description: "abook",
-          state: "待购",
+          status: "待购",
           pictures: null
         }
       ],
@@ -229,7 +277,7 @@ export default {
         },
         {
           title: "状态",
-          key: "state"
+          key: "status"
         },
         {
           title: "操作",
@@ -244,7 +292,7 @@ export default {
         lowestPrice: "10",
         highestPrice: "20",
         description: "abook",
-        state: "待购",
+        status: "待购",
         pictures: []
       },
       //   添加表单的验证规则对象
@@ -269,11 +317,7 @@ export default {
         ]
       },
       detailDialogVisible: false,
-      itemDetail: {
-        createTime: "",
-        modifiedTime: "",
-        detail: ""
-      },
+      detail: {},
       editDialogVisible: false,
       //   查询到的物品对象
       editForm: {
@@ -330,9 +374,7 @@ export default {
       const { data: res } = await this.$http.get("home/item/demand", {
         params: this.queryInfo
       });
-      if (res.code !== 200) {
-        return this.$message.error("获取用户列表失败!");
-      }
+      if (res.code !== 200) return this.$message.error("获取用户列表失败!");
       this.itemList = res.data.content;
       this.total = res.data.totalPages;
       // console.log(res)
@@ -364,19 +406,17 @@ export default {
     addItem() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return;
-        // 发起请求
+        this.addForm.status = "待售";
         const { data: res } = await this.$http.post(
           "item/demand/add",
-          this.addForm,
+          this.addForm
         );
 
-        if (res.code !== 200) {
-          this.$message.error("添加失败");
-        }
+        if (res.code !== 200) this.$message.error("添加失败");
 
-        this.$message.success("添加成功");
-        this.addDialogVisible = false;
         this.getItemList();
+        this.addDialogVisible = false;
+        this.$message.success("添加成功");
       });
     },
     showDetail(id) {
@@ -406,24 +446,23 @@ export default {
           mobile: this.editForm.mobile
         });
 
-        if (res.code !== 200) {
-          return this.$message.error("更新失败");
-        }
+        if (res.code !== 200) return this.$message.error("更新失败");
 
-        // 关闭对话框
-        this.editDialogVisible = false;
         // 刷新数据列表
         this.getItemList();
+        // 关闭对话框
+        this.editDialogVisible = false;
         // 提示修改成功
         this.$message.success("更新成功");
       });
     },
     delItem(index) {
-      // const { data: res } = this.$http.post();
-      // if (res.code !== 200) return this.$Message.error("删除失败");
-      this.itemList.splice(index, 1);
-      this.$Message.success("删除成功");
+      const { data: res } = this.$http.post();
+      if (res.code !== 200) return this.$Message.error("删除失败");
+
       this.getItemList();
+      // this.itemList.splice(index, 1);
+      this.$Message.success("删除成功");
     }
   }
 };

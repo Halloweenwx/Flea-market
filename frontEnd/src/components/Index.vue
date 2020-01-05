@@ -20,18 +20,15 @@
           <div class="items-item" v-for="(item, index) in sellList" :key="index">
             <div class="items-item-img">
               <router-link to="/detail">
-                <img :src="item.img" />
+                <img :src="item.pictures[0].url" />
               </router-link>
             </div>
             <div class="items-item-info">
-              <p>{{ item.intro }}</p>
+              <p>{{ item.description }}</p>
               <p>
                 <span class="items-price text-danger">
                   <Icon type="social-yen"></Icon>
-                  {{ item.price }}
-                </span>
-                <span class="items-old-price">
-                  <s>{{ item.realPrice }}</s>
+                  {{ '￥' + item.startPrice }}
                 </span>
               </p>
             </div>
@@ -65,10 +62,7 @@
               <p>
                 <span class="items-price text-danger">
                   <Icon type="social-yen"></Icon>
-                  {{ item.price }}
-                </span>
-                <span class="items-old-price">
-                  <s>{{ item.realPrice }}</s>
+                  {{ '￥' + item.lowestPrice + ' - ' + item.highestPrice }}
                 </span>
               </p>
             </div>

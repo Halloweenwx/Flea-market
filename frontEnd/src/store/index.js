@@ -21,7 +21,7 @@ export default new Vuex.Store({
     // 物品展示
     sellList: [],
     buyList: [],
-    searchList: []
+    // itemList: []    
   },
   mutations: {
     moveOn(state) {
@@ -42,6 +42,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    // async search(context, key, index) {
+    //   const { }
+    // }
     loadSellList({ commit }) {
       return new Promise((resolve, reject) => {
         const data = [
