@@ -134,10 +134,64 @@
 
     <!-- 详情的对话框 -->
     <Modal title="查看物品详情" v-model="detailDialogVisible">
-      <p>创建时间:{{itemDetail.createTime}}</p>
-      <p>修改时间:{{itemDetail.modifiedTime}}</p>
-      <p>详情:{{itemDetail.detail}}</p>
-      <img :src="itemDetail.pictures[0].url" />
+      <List>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品类型"
+            :description="detail.category"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品名称"
+            :description="detail.name"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品最低价格"
+            :description="detail.lowestPrice"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="是否一口价"
+            :description="detail.priceFixed"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="竞价结束日期"
+            :description="detail.endDate"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品描述"
+            :description="detail.description"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="创建时间"
+            :description="detail.createTime"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="修改时间"
+            :description="detail.modifiedTime"
+          />
+        </ListItem>
+      </List>
     </Modal>
 
     <!-- 修改出售物品的对话框 -->
@@ -217,7 +271,7 @@ export default {
           name: "笔记本",
           startPrice: 10,
           priceFixed: "是",
-          state: "待售"
+          status: "待售"
         }
       ],
       totalPages: 100,
@@ -245,7 +299,7 @@ export default {
         },
         {
           title: "状态",
-          key: "state"
+          key: "status"
         },
         {
           title: "操作",
@@ -277,7 +331,12 @@ export default {
           }
         ],
         priceFixed: [
-          { required: true, message: "请选择是否为一口价", trigger: "blur" }
+          {
+            required: true,
+            type: "boolean",
+            message: "请选择是否为一口价",
+            trigger: "blur"
+          }
         ],
         endDate: [
           {
@@ -289,16 +348,7 @@ export default {
         ]
       },
       detailDialogVisible: false,
-      itemDetail: {
-        createTime: "",
-        modifiedTime: "",
-        description: "",
-        pictures: [
-          {
-            url: "123"
-          }
-        ]
-      },
+      detail: {},
       editDialogVisible: false,
       //   查询到的物品
       editForm: {
@@ -356,9 +406,9 @@ export default {
       const { data: res } = await this.$http.get("home/item/idle", {
         params: this.queryInfo
       });
-      if (res.code !== 200) {
-        return this.$message.error("获取物品列表失败!");
-      }
+
+      if (res.code !== 200) return this.$message.error("获取物品列表失败!");
+
       this.itemList = res.data.content;
       this.totalPages = res.data.totalPages;
       // console.log(res);
@@ -382,22 +432,26 @@ export default {
     },
     // 点击按钮添加求购信息
     addItem() {
-      console.log(this.addForm);
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return;
+        console.log(this.addForm.endDate);
+        console.log(typeof this.addForm.endDate);
+        this.addForm.endDate = this.addForm.endDate.format(
+          "yyyy-mm-dd hh:mm:ss"
+        );
+        console.log(this.addForm.endDate);
         // 发起请求
+        this.addForm.status = "待售";
         const { data: res } = await this.$http.post(
           "item/idle/add",
           this.addForm
         );
 
-        if (res.code !== 200) {
-          this.$message.error("添加失败");
-        }
+        if (res.code !== 200) return this.$message.error("添加失败");
 
-        this.$message.success("添加成功");
-        this.addDialogVisible = false;
         this.getItemList();
+        this.addDialogVisible = false;
+        this.$message.success("添加成功");
       });
     },
     // 展示编辑物品信息的对话框
@@ -405,16 +459,11 @@ export default {
       this.editForm = this.itemList[id];
       if (this.editForm.priceFixed === "是") this.editForm.priceFixed = true;
       else this.editForm.priceFixed = false;
-      // const { data: res } = await this.$http.get('users/' + id)
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error('查询用户信息失败！')
-      // }
-      // this.editForm = res.data
       this.editDialogVisible = true;
     },
     showDetail(index) {
       this.itemDetail = this.itemList[index];
-      console.log(this.itemDetail);
+      // console.log(this.itemDetail);
       this.detailDialogVisible = true;
     },
     // 监听修改用户对话框的关闭事件
@@ -445,9 +494,10 @@ export default {
     delItem(index) {
       const { data: res } = this.$http.post();
       if (res.code !== 200) return this.$Message.error("删除失败");
-      this.itemList = this.itemList.splice(index, 1);
-      this.$Message.success("删除成功");
+
       this.getItemList();
+      // this.itemList = this.itemList.splice(index, 1);
+      this.$Message.success("删除成功");
     }
   }
 };

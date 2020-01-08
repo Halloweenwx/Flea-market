@@ -17,12 +17,13 @@
       <template slot-scope="{ row, index }" slot="price">
         <iInput
           type="text"
-          v-model="row.price"
-          v-if="row.type === '竞价'"
+          v-model="row.dealPrice"
+          v-if="row.priceFixed === true"
           @on-change="update(row, index)"
         ></iInput>
-        <span v-else>{{ row.price }}</span>
+        <span v-else>{{ row.dealPrice }}</span>
       </template>
+
       <!-- <template slot-scope="{ row, index }" slot="count">
         <iInput type="text" v-model="row.count" @on-change="update(row, index)"></iInput>
       </template>-->
@@ -46,7 +47,7 @@
         </p>
         <div class="pay-btn">
           <router-link to="/pay">
-            <Button type="error" size="large">支付订单</Button>
+            <Button type="error" size="large" @click="submit">支付订单</Button>
           </router-link>
         </div>
       </div>
@@ -75,6 +76,7 @@ export default {
           key: "img",
           width: 86,
           render: (h, params) => {
+            // console.log(params);
             return h("div", [
               h("img", {
                 attrs: {
@@ -86,8 +88,8 @@ export default {
           align: "center"
         },
         {
-          title: "标题",
-          key: "title",
+          title: "描述",
+          key: "description",
           align: "center"
         },
         {
@@ -98,58 +100,58 @@ export default {
         },
         {
           title: "商家名称",
-          key: "username",
-          width: 80,
+          key: "owner",
+          width: 100,
           align: "center"
           // slot: "count"
         },
         {
           title: "价格",
-          width: 80,
-          key: "price",
+          width: 90,
+          key: "dealPrice",
           align: "center",
           slot: "price"
         }
       ],
       shoppingCart: [
-        {
-          goods_id: "1529931938150",
-          isSelected: true,
-          count: 1,
-          img: require("../assets/img/1.jpg"),
-          type: "竞价",
-          price: 28,
-          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
-        },
-        {
-          goods_id: "1529931938150",
-          isSelected: true,
-          count: 1,
-          img: require("../assets/img/1.jpg"),
-          type: "一口价",
-          price: 28,
-          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
-        }
+        // {
+        //   goods_id: "1529931938150",
+        //   isSelected: true,
+        //   count: 1,
+        //   img: require("../assets/img/1.jpg"),
+        //   type: "竞价",
+        //   price: 28,
+        //   title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
+        // },
+        // {
+        //   goods_id: "1529931938150",
+        //   isSelected: true,
+        //   count: 1,
+        //   img: require("../assets/img/1.jpg"),
+        //   type: "一口价",
+        //   price: 28,
+        //   title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
+        // }
       ],
       shoppingCartTable: [
-        {
-          goods_id: "1529931938150",
-          isSelected: true,
-          count: 1,
-          img: "static/img/goodsDetail/pack/1.jpg",
-          type: "竞价",
-          price: 28,
-          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
-        },
-        {
-          goods_id: "1529931938150",
-          isSelected: true,
-          count: 1,
-          img: "static/img/goodsDetail/pack/1.jpg",
-          type: "一口价",
-          price: 28,
-          title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
-        }
+        // {
+        //   goods_id: "1529931938150",
+        //   isSelected: true,
+        //   count: 1,
+        //   img: "static/img/goodsDetail/pack/1.jpg",
+        //   type: "竞价",
+        //   price: 28,
+        //   title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
+        // },
+        // {
+        //   goods_id: "1529931938150",
+        //   isSelected: true,
+        //   count: 1,
+        //   img: "static/img/goodsDetail/pack/1.jpg",
+        //   type: "一口价",
+        //   price: 28,
+        //   title: "苹果8/7手机壳iPhone7 Plus保护壳全包防摔磨砂硬外壳"
+        // }
       ],
       remarks: "",
       // totalPrice: 0,
@@ -160,9 +162,9 @@ export default {
     totalPrice() {
       let price = 0;
       this.shoppingCartTable.forEach(value => {
-        if (value.isSelected)
-          // price += value.count * value.price;
-          price += value.price;
+        if (value.isSelected) {
+          price += value.dealPrice;
+        }
       });
       return price;
     }
@@ -170,19 +172,20 @@ export default {
   methods: {
     ...mapMutations(["changeCartCount"]),
     select(selection) {
-      var cnt = 0;
+      // var cnt = 0;
+      console.log(this.$refs.cart.objData);
       for (var i in this.$refs.cart.objData) {
         if (this.$refs.cart.objData[i]._isChecked) {
           this.shoppingCartTable[i].isSelected = true;
-          cnt += 1;
+          // cnt += 1;
         } else this.shoppingCartTable[i].isSelected = false;
       }
-      this.changeCartCount(cnt);
+      // this.changeCartCount(cnt);
     },
-    update(row, index) {
+    async update(row, index) {
       const oldPrice = this.shoppingCartTable[index].price;
       this.shoppingCartTable[index].price = row.price;
-      const { data: res } = this.$http.post(
+      const { data: res } = await this.$http.post(
         "cart/item/update",
         this.shoppingCartTable
       );
@@ -192,23 +195,37 @@ export default {
       }
       // this.shoppingCartTable[index].count = row.count;
     },
-    getshoppingCart() {
-      const { data: res } = this.$http.get("cart");
+    async getshoppingCart() {
+      const { data: res } = await this.$http.get("cart");
       if (res.code !== 200) return this.$Message.error("获取购物车信息失败");
+      for (var i in res.data) {
+        res.data[i].type = res.data[i].category.cnCategory;
+        res.data[i].owner = res.data[i].belong.username;
+        res.data[i].isSelected = false;
+        res.data[i].dealPrice = res.data[i].startPrice;
+        if (res.data[i].pictures) res.data[i].img = res.data[i].pictures[0].url;
+      }
       this.shoppingCart = this.shoppingCartTable = res.data;
     },
-    submit() {
-      const { data: res } = this.$http.get("cart/buy");
+    async submit() {
+      var buyItems = [];
+      for (var i in this.shoppingCartTable) {
+        if (this.shoppingCartTable[i].isSelected) {
+          buyItems.push(this.shoppingCartTable[i]);
+        }
+      }
+      console.log(buyItems);
+      const { data: res } = await this.$http.post("cart/buy", buyItems);
       if (res.code !== 200) return this.$Message.error("提交订单失败");
       this.$Message.success("提交订单成功");
     }
   },
   created() {
     this.getshoppingCart();
-  },
-  mounted() {
-    this.$refs.cart.selectAll(true);
   }
+  // mounted() {
+  //   this.$refs.cart.selectAll(true);
+  // }
 };
 </script>
 

@@ -23,7 +23,7 @@
             <ListItemMeta
               avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
               title="姓名"
-              :description="userInfo.realname"
+              :description="userInfo.realName"
             />
           </ListItem>
           <ListItem>
@@ -58,8 +58,8 @@
             <Icon type="ios-person-outline" slot="prepend"></Icon>
           </iInput>
         </FormItem>
-        <FormItem label="姓名" prop="realname">
-          <iInput type="text" v-model="editForm.realname" placeholder="请输入你的姓名" clearable disabled>
+        <FormItem label="姓名" prop="realName">
+          <iInput type="text" v-model="editForm.realName" placeholder="请输入你的姓名" clearable disabled>
             <Icon type="ios-person-outline" slot="prepend"></Icon>
           </iInput>
         </FormItem>
@@ -128,7 +128,7 @@ export default {
       // 用户信息
       userInfo: {
         username: "wxl1999",
-        realname: "王晓磊",
+        realName: "王晓磊",
         phone: "18810312968",
         // email: '123',
         city: "北京"
@@ -136,7 +136,7 @@ export default {
       // 编辑用户信息
       editForm: {
         username: "wxl1999",
-        realname: "王晓磊",
+        realName: "王晓磊",
         city: "北京",
         phone: "18810312968",
         // email: '',
@@ -149,7 +149,7 @@ export default {
         // username: [
         //   { required: true, message: '请填写用户名', trigger: 'blur' }
         // ],
-        // realname: [{ required: true, message: '请填写真实姓名', trigger: 'blur' }],
+        // realName: [{ required: true, message: '请填写真实姓名', trigger: 'blur' }],
         // city: [
         //   { required: true, message: '请填写您所在的城市', trigger: 'blur' }
         // ],

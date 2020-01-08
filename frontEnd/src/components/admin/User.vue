@@ -11,16 +11,8 @@
       <!-- 搜索与添加区 -->
       <Row :gutter="50">
         <iCol :span="7">
-          <iInput
-            placeholder="请输入内容"
-            v-model="queryInfo.query"
-            @on-clear="getUserList"
-          >
-            <iButton
-              slot="append"
-              icon="ios-search-outline"
-              @click="getUserList"
-            ></iButton>
+          <iInput placeholder="请输入内容" v-model="queryInfo.query" @on-clear="getUserList">
+            <iButton slot="append" icon="ios-search-outline" @click="getUserList"></iButton>
           </iInput>
         </iCol>
       </Row>
@@ -33,15 +25,14 @@
         border
         stripe
         no-data-text="这里空空如也~"
-      >
-      </Table>
+      ></Table>
 
       <!-- 分页区域 -->
       <Page
         class="page"
         :current="queryInfo.pagenum"
         :page-size-opts="[1, 2, 5, 10]"
-        :page-size="queryInfo.pagesize"
+        :page-size="queryInfo.pageSize"
         :total="total"
         show-total
         show-elevator
@@ -59,50 +50,77 @@ export default {
     return {
       // 获取物品列表的参数对象
       queryInfo: {
-        query: '',
+        query: "",
         // 当前的页数
         pagenum: 1,
         // 当前每页显示多少条数据
-        pagesize: 2
+        pageSize: 2
       },
       userList: [],
       total: 100,
       columns: [
         {
-          type: 'index'
+          type: "index"
         },
         {
-          title: '用户名',
-          key: 'username'
+          title: "用户名",
+          key: "username"
         },
         {
-          title: '姓名',
-          key: 'name'
+          title: "姓名",
+          key: "realName"
         },
         {
-          title: '手机号',
-          key: 'mobile'
+          title: "手机号",
+          key: "phone"
         },
         {
-          title: '注册城市',
-          key: 'city'
+          title: "注册城市",
+          key: "city"
         },
         {
-          title: '用户级别',
-          key: 'level'
+          title: "用户级别",
+          key: "memberLevel"
         },
         {
-          title: '注册时间',
-          key: 'registerTime'
+          title: "注册时间",
+          key: "registerTime"
         },
         {
-          title: '修改时间',
-          key: 'modifyTime'
+          title: "修改时间",
+          key: "modifiedTime"
         }
       ]
+    };
+  },
+  methods: {
+    async getUserList() {
+      const { data: res } = await this.$http.get("admin/user", {
+        params: this.queryInfo
+      });
+      if (res.code !== 200) return this.$Message.error(res.msg);
+      this.userList = res.data.content;
+      for (var i in this.userList) {
+        if (this.userList[i].city)
+          this.userList[i].city = this.userList[i].city.label;
+      }
+      this.total = res.data.total;
+    },
+    // 监听pagesize改变的事件
+    handleSizeChange(newSize) {
+      this.queryInfo.pageSize = newSize;
+      this.getItemList();
+    },
+    // 监听页码值改变的事件
+    handleCurrentChange(newPage) {
+      this.queryInfo.pageNum = newPage;
+      this.getItemList();
     }
+  },
+  created() {
+    this.getUserList();
   }
-}
+};
 </script>
 
 <style scoped>
