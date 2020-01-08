@@ -31,14 +31,13 @@ public class User {
     @GenericGenerator(name = "system-uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(length = 36, unique = true)
     private String uid;
-    @Column(length = 32)
+    @Column(length = 32, unique = true)
     private String username;
     @Column(length = 32)
     private String password;
     @Column(length = 32)
     @JsonIgnore
     private String salt;
-    @JsonProperty(value = "realname")
     private String realName;
     @Column(length = 11)
     private String phone;

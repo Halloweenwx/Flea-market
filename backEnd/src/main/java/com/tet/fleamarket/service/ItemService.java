@@ -3,13 +3,17 @@ package com.tet.fleamarket.service;
 import com.tet.fleamarket.dao.DemandItemDao;
 import com.tet.fleamarket.dao.IdleItemDao;
 import com.tet.fleamarket.dao.ItemDao;
+import com.tet.fleamarket.dao.PictureOss;
 import com.tet.fleamarket.entity.DemandItem;
 import com.tet.fleamarket.entity.IdleItem;
 import com.tet.fleamarket.entity.Item;
+import com.tet.fleamarket.entity.Picture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 /**
  * @author Hou Weiying
@@ -23,13 +27,15 @@ public class ItemService {
     @Autowired
     private IdleItemDao idleItemDao;
 
+    @Autowired
+    private PictureOss pictureOss;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     /**
      * idle
      */
-
 
     public Item getIdleItemByIid(String iid) {
         if (!iid.isEmpty()) {
@@ -111,5 +117,10 @@ public class ItemService {
         }
     }
 
+    public void addPicUrl(Item item) throws IOException {
+        for (Picture pic:item.getPictures()){
+            pic.setUrl(pictureOss.findByPid(pic.getPid()).getUrl());
+        }
+    }
 
 }

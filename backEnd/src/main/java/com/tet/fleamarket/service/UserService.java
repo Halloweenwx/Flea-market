@@ -93,17 +93,24 @@ public class UserService {
 
     public Boolean update(User updateInfo) {
         boolean updated = false;
-        User userToUpdate = getUserByUid(updateInfo.getUid());
-        if (!updateInfo.getUsername().equals(userToUpdate.getUsername())) {
-            userToUpdate.setUsername(updateInfo.getUsername());
-            updated = true;
-        } else if (updateInfo.getPhone() != null && !userToUpdate.getPhone().equals(updateInfo.getPhone())) {
-            userToUpdate.setPhone(updateInfo.getPhone());
-            updated = true;
-        } else if (updateInfo.getCity() != null && userToUpdate.getCity() != updateInfo.getCity()) {
-            userToUpdate.setCity(updateInfo.getCity());
+        try {
+            User userToUpdate = getUserByUid(updateInfo.getUid());
+            if (!updateInfo.getUsername().equals(userToUpdate.getUsername())) {
+                userToUpdate.setUsername(updateInfo.getUsername());
+                updated = true;
+            } else if (updateInfo.getPhone() != null && !userToUpdate.getPhone().equals(updateInfo.getPhone())) {
+                userToUpdate.setPhone(updateInfo.getPhone());
+                updated = true;
+            } else if (updateInfo.getCity() != null && userToUpdate.getCity() != updateInfo.getCity()) {
+                userToUpdate.setCity(updateInfo.getCity());
+            } else if (updateInfo.getPassword() != null) {
+                userToUpdate.setSalt(randomString(saltLen));
+                userToUpdate.setPassword(getMD5(userToUpdate.getPassword() + userToUpdate.getSalt()));
+            }
+            userDao.save(userToUpdate);
+        } catch (Exception e) {
+            logger.info("update error" + updateInfo.toString());
         }
-        userDao.save(userToUpdate);
         return updated;
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.tet.fleamarket.util.status.FetchStatus.BAD_REQUEST;
+import static com.tet.fleamarket.util.status.FetchStatus.FETCH_SUCCESS;
 
 
 /**
@@ -35,8 +36,16 @@ public class AdminController {
         Sort sort = new Sort(Sort.Direction.DESC, "uid");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         Page<User> users = userDao.findAll(pageable);
-
+        status = FETCH_SUCCESS;
         return new Result(status, users);
+    }
+
+    @TokenRequired
+    @GetMapping("/stat")
+    public Result statistic(){
+
+
+        return new Result();
     }
 
 }

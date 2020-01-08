@@ -18,6 +18,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ItemDao extends JpaRepository<Item, String> {
-
-
 }

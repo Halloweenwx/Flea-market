@@ -31,4 +31,8 @@ public interface IdleItemDao extends JpaRepository<IdleItem, String> {
     Page<IdleItem> findByBelong_UidAndNameContains(String uid, String name, Pageable pageable);
 
     List<IdleItem> findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc(String status);
+
+    Page<IdleItem> findByNameContaining(String keyword, Pageable pageable);
+    Page<IdleItem> findByNameContainingAndCategory_EnCategory(String keyword, String category, Pageable pageable);
+    Page<IdleItem> findByNameContainingAndCategory_EnCategoryAndStartPriceBetween(String keyword, String category,double lprice,double rprice,Pageable pageable);
 }

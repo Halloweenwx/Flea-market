@@ -3,6 +3,7 @@ package com.tet.fleamarket.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
+import com.tet.fleamarket.entity.Administrator;
 import com.tet.fleamarket.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,16 @@ public class TokenService {
     int expireSecond;
 
     public String genUserToken(User user){
+        String utype;
+        if(user instanceof Administrator){
+            utype = "A";
+        }else{
+            utype = "C";
+        }
         return JWT.create().withAudience(user.getUid())
                 .withClaim("uid",user.getUid())
                 .withClaim("username",user.getUsername())
+                .withClaim("utype",utype)
                 .withClaim("expireSecond",expireSecond)
                 .sign(Algorithm.HMAC256(user.getSalt()));
 

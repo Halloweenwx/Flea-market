@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,58 @@ public class ItemController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     *
+     * @param pageNum 第几页
+     * @param pageSize 一页几个
+     * @param query 查询关键词
+     * @param isIdle 是否为idle
+     * @param lprice 价格左边界
+     * @param rprice 价格右边界
+     * @param category 分类
+     * @return
+     */
+    @GetMapping("/fore/search")
+    public Result foreSearch(@RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+                             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                             @RequestParam(name = "query", required = false, defaultValue = "") String query,
+                             @RequestParam(name = "isIdle", required = false, defaultValue = "true") Boolean isIdle,
+                             @RequestParam(name = "lprice", required = false, defaultValue = "0") Double lprice,
+                             @RequestParam(name = "rprice", required = false, defaultValue = "99999") Double rprice,
+                             @RequestParam(name = "category", required = false, defaultValue = "%") String category
+                             ){
+        Page<IdleItem> idleItems = null;
+        Page<DemandItem> demandItems = null;
+        Sort sort = new Sort(Sort.Direction.DESC, "iid");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
+        if(isIdle){
+//            idleItems = idleItemDao.findByNameContainingAndCategory_EnCategory(query,category,pageable);
+            idleItems = idleItemDao.findByNameContainingAndCategory_EnCategoryAndStartPriceBetween(query,category,lprice,rprice,pageable);
+            for (IdleItem idleItem : idleItems){
+                try {
+                    itemService.addPicUrl(idleItem);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return new Result(FETCH_SUCCESS,idleItems);
+        }else{
+            demandItems = demandItemDao.findByNameContainingAndCategory_EnCategoryContainingAndLowestPriceGreaterThanEqualAndHighestPriceLessThanEqual(query,category,lprice,rprice,pageable);
+            for (DemandItem demandItem : demandItems){
+                try {
+                    itemService.addPicUrl(demandItem);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return new Result(FETCH_SUCCESS,demandItems);
+        }
+    }
+    /**
+     * 首页请求物品
+     * @param type
+     * @return
+     */
     @GetMapping("/fore/item/{type}")
     public Result foreFetch(@PathVariable String type) {
         Status status = BAD_REQUEST;
@@ -58,10 +111,25 @@ public class ItemController {
         List<DemandItem> demandItems = new ArrayList<>();
         if ("idle".equals(type)) {
             idleItems = idleItemDao.findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc("on");
-            status = FETCH_SUCCESS;
+            for(IdleItem idleItem:idleItems){
+                try {
+                    itemService.addPicUrl(idleItem);
+                    status = FETCH_SUCCESS;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         } else if ("demand".equals(type)) {
             demandItems = demandItemDao.findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc("on");
-            status = FETCH_SUCCESS;
+            for(DemandItem demandItem:demandItems) {
+                try {
+                    itemService.addPicUrl(demandItem);
+                    status = FETCH_SUCCESS;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
         if ("idle".equals(type)) {
             return new Result(status, idleItems);
@@ -169,7 +237,14 @@ public class ItemController {
         return new Result(status);
     }
 
-
+    /**
+     * 个人主页请求物品
+     * @param httpServletRequest
+     * @param pageNum
+     * @param pageSize
+     * @param type
+     * @return
+     */
     @TokenRequired
     @GetMapping("/home/item/{type}")
     public Result fetchByUid(HttpServletRequest httpServletRequest,

@@ -2,6 +2,7 @@ package com.tet.fleamarket.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tet.fleamarket.dao.CartDao;
+import com.tet.fleamarket.dao.IdleItemDao;
 import com.tet.fleamarket.entity.*;
 import com.tet.fleamarket.service.DealService;
 import com.tet.fleamarket.service.TokenService;
@@ -37,6 +38,10 @@ public class CartController {
 
     @Autowired
     private DealService dealService;
+
+    @Autowired
+    private IdleItemDao idleItemDao;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @TokenRequired
@@ -52,17 +57,16 @@ public class CartController {
         } catch (Exception e) {
             status = BAD_REQUEST;
         }
-        return new Result(status, cart);
+        return new Result(status, cart.getIdleItems());
     }
 
     @TokenRequired
     @PostMapping("/cart/item/add")
     public Result addThis(HttpServletRequest httpServletRequest, @RequestBody() IdleItem idleItem) {
         Customer customer = new Customer(tokenService.getUserFromToken(httpServletRequest.getHeader("Authorization")));
-        Cart cart = new Cart();
         Status status = BAD_REQUEST;
         try {
-            cart = cartDao.findCartByCustomer_Uid(customer.getUid());
+            Cart cart= cartDao.findCartByCustomer_Uid(customer.getUid());
             Set<IdleItem> items = cart.getIdleItems();
             items.add(idleItem);
             cart.setIdleItems(items);
@@ -120,14 +124,13 @@ public class CartController {
         try {
             for (IdleItem item : items) {
                 dealService.buyThis(item, customer);
+                cart = dealService.removeItem(cart, item.getIid());
             }
             status = DEAL_SUCCESS;
         } catch (Exception e) {
             status = BAD_REQUEST;
             logger.error(e.getMessage());
         }
-        items.clear();
-        cart.setIdleItems(items);
         cartDao.save(cart);
         return new Result(status);
     }

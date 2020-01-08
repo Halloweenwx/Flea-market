@@ -30,4 +30,6 @@ public interface DemandItemDao extends JpaRepository<DemandItem, String> {
     Page<DemandItem> findByBelong_UidAndNameContains(String uid, String name, Pageable pageable);
 
     List<DemandItem> findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc(String status);
+
+    Page<DemandItem> findByNameContainingAndCategory_EnCategoryContainingAndLowestPriceGreaterThanEqualAndHighestPriceLessThanEqual(String keyword, String category,double lprice,double rprice,Pageable pageable);
 }

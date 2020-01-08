@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IdleItem extends Item{
-    private boolean priceFixed;
+    private Boolean priceFixed;
     private Double startPrice;
     private Timestamp endDate;
 }

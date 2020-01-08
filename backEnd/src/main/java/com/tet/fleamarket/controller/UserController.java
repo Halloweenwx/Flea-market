@@ -108,7 +108,6 @@ public class UserController {
             data.put("checkNum", checkNum);
             status = SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("未知错误");
         }
         return new Result(status, data);

@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author Hou Weiying
  * @date 2019-12-24 12:03
@@ -26,15 +30,17 @@ public class DealService {
         Deal deal = new Deal();
         boolean state = false;
         try {
+            IdleItem idleItemInBase = idleItemDao.findByIid(item.getIid());
+
             deal.setPayer(customer);
             deal.setOwner(item.getBelong());
             deal.setDealPrice(item.getDealPrice());
 
             //易主
-            item.setBelong(customer);
-            item.setIid(null);
+            idleItemInBase.setBelong(customer);
             //下架
-            item.setItemStatus(new ItemStatus("off"));
+            idleItemInBase.setItemStatus(new ItemStatus("off"));
+            idleItemInBase.setDealPrice(item.getDealPrice());
             state = true;
         } catch (Exception e) {
             logger.error("交易失败");
@@ -44,5 +50,17 @@ public class DealService {
         idleItemDao.save(item);
 
         return state;
+    }
+
+    public Cart removeItem(Cart cart,String iid){
+        Set<IdleItem> items = cart.getIdleItems();
+        Set<IdleItem> itemsRemoved = new HashSet<>();
+        for (IdleItem idleItem:items){
+            if(!idleItem.getIid().equals(iid)){
+                itemsRemoved.add(idleItem);
+            }
+        }
+        cart.setIdleItems(itemsRemoved);
+        return cart;
     }
 }
