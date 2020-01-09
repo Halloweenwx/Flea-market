@@ -10,12 +10,12 @@
     <Card>
       <!-- 搜索与添加区 -->
       <Row :gutter="50">
-        <iCol :span="7">
+        <!-- <iCol :span="7">
           <iInput placeholder="请输入内容" v-model="queryInfo.query" @on-clear="getItemList">
             <iButton slot="append" icon="ios-search-outline" @click="getItemList"></iButton>
           </iInput>
-        </iCol>
-        <iCol :offset="13" :span="4">
+        </iCol> -->
+        <iCol :offset="18" :span="4">
           <iButton type="primary" @click="addDialogVisible = true">我有东西要卖</iButton>
         </iCol>
       </Row>
@@ -49,7 +49,7 @@
               icon="ios-create-outline"
               size="default"
               class="modify"
-              :disable="!this.itemList[index].canChange"
+              :disabled="!itemList[index].canChange"
               @click="showEditDialog(index)"
             ></iButton>
           </Tooltip>
@@ -60,6 +60,7 @@
               type="error"
               icon="ios-trash-outline"
               size="default"
+              :disabled="!itemList[index].canChange"
               @click="delItem(index)"
             ></iButton>
           </Tooltip>
@@ -215,7 +216,7 @@
         <FormItem label="物品最低价格" prop="startPrice">
           <iInput v-model="editForm.startPrice"></iInput>
         </FormItem>
-        <FormItem label="是否一口价" prop="priceFixed">
+        <!-- <FormItem label="是否一口价" prop="priceFixed">
           <iSwitch v-model="editForm.priceFixed" />
         </FormItem>
         <FormItem label="竞价结束日期" prop="endDate">
@@ -226,7 +227,7 @@
             placeholder="请选择竞价结束日期"
             style="width: 200px"
           ></DatePicker>
-        </FormItem>
+        </FormItem> -->
         <FormItem label="物品描述" prop="description">
           <iInput v-model="editForm.description"></iInput>
         </FormItem>
@@ -236,7 +237,7 @@
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//192.168.137.196:8080/picture/upload"
+            action="//localhost:8080/picture/upload"
             @on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
@@ -258,8 +259,6 @@
 export default {
   data() {
     return {
-
-      canChange:true,
       // 获取物品列表的参数对象
       queryInfo: {
         query: "",
@@ -333,22 +332,22 @@ export default {
             trigger: "blur"
           }
         ],
-        priceFixed: [
-          {
-            required: true,
-            type: "boolean",
-            message: "请选择是否为一口价",
-            trigger: "blur"
-          }
-        ],
-        endDate: [
-          {
-            required: true,
-            type: "date",
-            message: "请选择竞价结束日期",
-            trigger: "blur"
-          }
-        ]
+        // priceFixed: [
+        //   {
+        //     required: true,
+        //     type: "boolean",
+        //     message: "请选择是否为一口价",
+        //     trigger: "blur"
+        //   }
+        // ],
+        // endDate: [
+        //   {
+        //     required: true,
+        //     type: "date",
+        //     message: "请选择竞价结束日期",
+        //     trigger: "blur"
+        //   }
+        // ]
       },
       detailDialogVisible: false,
       detail: {},
@@ -450,7 +449,7 @@ export default {
         );
         console.log(this.addForm.endDate);
         // 发起请求
-        this.addForm.status = "待售";
+        this.addForm.status = "on";
         const { data: res } = await this.$http.post(
           "item/idle/add",
           this.addForm
@@ -481,31 +480,27 @@ export default {
     },
     // 修改物品信息并提交
     editItem() {
-      this.$refs.editFormRef.validate(valid => {
+      this.$refs.editFormRef.validate(async valid => {
         if (!valid) return;
-        const { data: res } = this.$http.post("users/" + this.editForm.id, {
-          email: this.editFrom.email,
-          mobile: this.editForm.mobile
-        });
-
-        if (res.code !== 200) {
-          return this.$message.error("更新失败");
-        }
-
-        // 关闭对话框
-        this.editDialogVisible = false;
+        console.log(this.editForm)
+        const { data: res } = await this.$http.post("item/idle/update", 
+          this.editForm
+        );
+        console.log(res);
+        // if (res.code !== 200) return this.$message.error("更新失败");
         // 刷新数据列表
         this.getItemList();
+        // 关闭对话框
+        this.editDialogVisible = false;
         // 提示修改成功
-        this.$message.success("更新成功");
+        // this.$message.success("更新成功");
       });
     },
-    delItem(index) {
-      const { data: res } = this.$http.post();
+    async delItem(index) {
+      const { data: res } = await this.$http.delete("/item/idle/delete/"+ this.itemList[index].iid);
       if (res.code !== 200) return this.$Message.error("删除失败");
-
       this.getItemList();
-      // this.itemList = this.itemList.splice(index, 1);
+      // this.itemList.splice(index, 1);
       this.$Message.success("删除成功");
     }
   }

@@ -1,5 +1,6 @@
 package com.tet.fleamarket.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tet.fleamarket.dao.DemandItemDao;
 import com.tet.fleamarket.dao.IdleItemDao;
@@ -78,9 +79,9 @@ public class ItemController {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
         if (isIdle) {
 //            idleItems = idleItemDao.findByNameContainingAndCategory_EnCategory(query,category,pageable);
-            if("".equals(category)) {
+            if ("".equals(category)) {
                 idleItems = idleItemDao.findByNameContainingAndStartPriceBetween(query, lprice, rprice, pageable);
-            }else{
+            } else {
                 idleItems = idleItemDao.findByNameContainingAndCategory_EnCategoryAndStartPriceBetween(query, category, lprice, rprice, pageable);
             }
             for (IdleItem idleItem : idleItems) {
@@ -189,11 +190,12 @@ public class ItemController {
         String token = httpServletRequest.getHeader("Authorization");
         Customer customer = new Customer(tokenService.getUserFromToken(token));
         Status status = BAD_REQUEST;
+        JSONObject res = new JSONObject();
         try {
             if ("idle".equals(type)) {
                 IdleItem idleItemInBase = idleItemDao.findByIid(iid);
                 idleItemDao.delete(idleItemInBase);
-            }else if("demand".equals(type)){
+            } else if ("demand".equals(type)) {
                 DemandItem demandItemInBase = demandItemDao.findByIid(iid);
                 demandItemDao.delete(demandItemInBase);
             }
@@ -202,9 +204,47 @@ public class ItemController {
             status = BAD_REQUEST;
         }
 
-        return new Result(status);
+        return new Result(status,res);
     }
 
+    @TokenRequired
+    @PostMapping("/item/idle/update")
+    public Result update(HttpServletRequest httpServletRequest, @RequestBody() IdleItem updateItemInfo) {
+        String token = httpServletRequest.getHeader("Authorization");
+        Customer customer = new Customer(tokenService.getUserFromToken(token));
+        Status status = BAD_REQUEST;
+        JSONObject res = new JSONObject();
+        try {
+            IdleItem itemInBase = idleItemDao.findByIid(updateItemInfo.getIid());
+            itemInBase.setName(updateItemInfo.getName());
+            itemInBase.setStartPrice(updateItemInfo.getStartPrice());
+            itemInBase.setDescription(updateItemInfo.getDescription());
+            idleItemDao.save(itemInBase);
+        } catch (Exception e) {
+            status = BAD_REQUEST;
+        }
+        return new Result(status,res);
+    }
+
+    @TokenRequired
+    @PostMapping("/item/demand/update")
+    public Result update(HttpServletRequest httpServletRequest, @RequestBody() DemandItem updateItemInfo) {
+        String token = httpServletRequest.getHeader("Authorization");
+        Customer customer = new Customer(tokenService.getUserFromToken(token));
+        Status status = BAD_REQUEST;
+        JSONObject res = new JSONObject();
+        try {
+            DemandItem itemInBase = demandItemDao.findByIid(updateItemInfo.getIid());
+            itemInBase.setName(updateItemInfo.getName());
+            itemInBase.setHighestPrice(updateItemInfo.getHighestPrice());
+            itemInBase.setLowestPrice(updateItemInfo.getLowestPrice());
+            itemInBase.setDescription(updateItemInfo.getDescription());
+            demandItemDao.save(itemInBase);
+        } catch (Exception e) {
+            status = BAD_REQUEST;
+        }
+        return new Result(status,res);
+    }
 
     @TokenRequired
     @PostMapping("/item/demand/add")

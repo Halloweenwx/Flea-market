@@ -10,12 +10,12 @@
     <Card>
       <!-- 搜索与添加区 -->
       <Row :gutter="50">
-        <iCol :span="7">
+        <!-- <iCol :span="7">
           <iInput placeholder="搜索商品名" v-model="queryInfo.query" @on-clear="getItemList">
             <iButton slot="append" icon="ios-search-outline" @click="getItemList"></iButton>
           </iInput>
-        </iCol>
-        <iCol :offset="13" :span="4">
+        </iCol> -->
+        <iCol :offset="18" :span="4">
           <iButton type="primary" @click="addDialogVisible = true">发布求购信息</iButton>
         </iCol>
       </Row>
@@ -49,6 +49,7 @@
               icon="ios-create-outline"
               size="default"
               class="modify"
+              :disabled="!itemList[index].canChange"
               @click="showEditDialog(index)"
             ></iButton>
           </Tooltip>
@@ -59,6 +60,7 @@
               type="error"
               icon="ios-trash-outline"
               size="default"
+              :disabled="!itemList[index].canChange"
               @click="delItem(index)"
             ></iButton>
           </Tooltip>
@@ -181,13 +183,12 @@
     </Modal>
 
     <!-- 修改求购的对话框 -->
-    <Modal title="修改求购物品的信息" v-model="editDialogVisible">
+    <Modal title="修改求购物品的信息" v-model="editDialogVisible" @close="editDialogClosed">
       <Form
         :model="editForm"
         :rules="editFormRules"
         ref="editFormRef"
         :label-width="125"
-        @close="editDialogClosed"
       >
         <FormItem label="物品类型" prop="category">
           <Select v-model="editForm.category" style="width:200px" clearable>
@@ -379,11 +380,13 @@ export default {
       const { data: res } = await this.$http.get("home/item/demand", {
         params: this.queryInfo
       });
+      console.log(this.queryInfo)
       if (res.code !== 200) return this.$message.error("获取用户列表失败!");
       console.log(res)
       for(var i in res.data.content){
         res.data.content[i].category = res.data.content[i].category.cnCategory;
         res.data.content[i].status = res.data.content[i].itemStatus.cnStatus;
+        res.data.content[i].canChange = res.data.content[i].itemStatus.enStatus === 'on';
       }
       this.itemList = res.data.content;
       this.total = res.data.totalPages;
@@ -417,8 +420,7 @@ export default {
         if (!valid) return;
         this.addForm.status = "on";
         console.log(this.addForm)
-        const { data: res } = await this.$http.post(
-          "item/demand/add",
+        const { data: res } = await this.$http.post("item/demand/add",
           this.addForm
         );
 
@@ -449,21 +451,20 @@ export default {
     },
     // 修改物品信息并提交
     editItem() {
-      this.$refs.editFormRef.validate(valid => {
+      this.$refs.editFormRef.validate(async valid => {
         if (!valid) return;
-        const { data: res } = this.$http.post("users/" + this.editForm.id, {
-          email: this.editFrom.email,
-          mobile: this.editForm.mobile
-        });
-
-        if (res.code !== 200) return this.$message.error("更新失败");
-
+        console.log(this.editForm)
+        const { data: res } = await this.$http.post("item/demand/update", 
+          this.editForm
+        );
+        console.log(res);
+        // if (res.code !== 200) return this.$message.error("更新失败");
         // 刷新数据列表
         this.getItemList();
         // 关闭对话框
         this.editDialogVisible = false;
         // 提示修改成功
-        this.$message.success("更新成功");
+        // this.$message.success("更新成功");
       });
     },
     async delItem(index) {

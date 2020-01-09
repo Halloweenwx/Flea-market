@@ -26,13 +26,13 @@ public class Brokerage {
     @GenericGenerator(name = "system-uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(length = 36, unique = true)
     private String brid;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumns({@JoinColumn(name="iid", referencedColumnName="iid")})
     private Item item;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumns({@JoinColumn(name="req_uid", referencedColumnName="uid")})
     private Customer requester;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumns({@JoinColumn(name="res_uid", referencedColumnName="uid")})
     private Customer responser;
     @Column(columnDefinition = "timestamp")

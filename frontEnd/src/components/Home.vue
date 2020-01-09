@@ -7,7 +7,7 @@
             <div class="user-img">
               <img src="../assets/img/qrcode.png" />
             </div>
-            <p>{{ this.username }}</p>
+            <!-- <p>{{ this.username }}</p> -->
           </div>
           <MenuItem name="info" :to="`/info`">
             <Icon type="md-person"></Icon>

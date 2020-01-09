@@ -31,7 +31,7 @@ public class DealService {
     CustomerDao customerDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Transactional(rollbackFor = {Exception.class})
+
     public boolean buyThis(IdleItem item, Customer customer) {
         Deal deal = new Deal();
         boolean state = false;
@@ -55,21 +55,21 @@ public class DealService {
             brokerage.setSalePrice(item.getDealPrice());
 
             brokerage.setTotal(item.getDealPrice()*brokerage.getReqRate()+item.getDealPrice()*brokerage.getResRate());
-
+            logger.info(brokerage.toString());
             brokerageDao.save(brokerage);
             //易主
             idleItemInBase.setBelong(customer);
             //下架
             idleItemInBase.setItemStatus(new ItemStatus("off"));
             idleItemInBase.setDealPrice(item.getDealPrice());
-
             state = true;
+            dealDao.save(deal);
+            idleItemDao.save(idleItemInBase);
         } catch (Exception e) {
             logger.error("交易失败");
         }
 
-        dealDao.save(deal);
-        idleItemDao.save(item);
+
 
         return state;
     }

@@ -1,5 +1,7 @@
 package com.tet.fleamarket.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.tet.fleamarket.dao.CustomerDao;
 import com.tet.fleamarket.dao.UserDao;
 import com.tet.fleamarket.entity.User;
@@ -14,6 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.tet.fleamarket.util.status.FetchStatus.BAD_REQUEST;
 import static com.tet.fleamarket.util.status.FetchStatus.FETCH_SUCCESS;
@@ -41,12 +46,54 @@ public class AdminController {
         return new Result(status, users);
     }
 
-    @TokenRequired
     @GetMapping("/stat")
     public Result statistic(){
+        Status status = FETCH_SUCCESS;
+        JSONObject res = new JSONObject();
+        JSONObject xAxis = new JSONObject();
+        JSONObject yAxis = new JSONObject();
+        JSONObject tooltip = new JSONObject();
+        JSONArray series = new JSONArray();
+        JSONObject seriesObj = new JSONObject();
+        JSONObject areaStyle = new JSONObject();
+        List<String> Xdata = new ArrayList<>();
+        List<Double> sdata = new ArrayList<>();
+        Xdata.add("Mon");
+        Xdata.add("Tue");
+        Xdata.add("Wed");
+        Xdata.add("Thu");
+        Xdata.add("Fri");
+        Xdata.add("Sat");
+        Xdata.add("Sum");
+
+        sdata.add(100d);
+        sdata.add(120d);
+        sdata.add(130d);
+        sdata.add(140d);
+        sdata.add(150d);
+        sdata.add(160d);
+        sdata.add(170d);
+
+        seriesObj.put("data",sdata);
+        seriesObj.put("type","line");
+        seriesObj.put("areaStyle",areaStyle);
+        series.add(seriesObj);
+
+        tooltip.put("trigger","axis");
+
+        xAxis.put("boundaryGap",false);
+        xAxis.put("data",Xdata);
+        xAxis.put("type","category");
+        yAxis.put("type","value");
+
+        res.put("title","统计图");
+        res.put("xAxis", xAxis);
+        res.put("tooltip", tooltip);
+        res.put("yAxis", yAxis);
+        res.put("series",series);
 
 
-        return new Result();
+        return new Result(status,res);
     }
 
 }
