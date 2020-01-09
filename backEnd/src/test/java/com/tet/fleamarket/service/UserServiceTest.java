@@ -1,10 +1,8 @@
 package com.tet.fleamarket.service;
 
-import com.tet.fleamarket.dao.UserDao;
+import com.tet.fleamarket.dao.CustomerDao;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Hou Weiying
@@ -13,10 +11,10 @@ import static org.junit.Assert.*;
 public class UserServiceTest {
 
     @Autowired
-    private UserDao userDao;
+    private CustomerDao customerDao;
 
     @Test
     public void usernameExists() {
-        userDao.findByUsername("admin2");
+        customerDao.findByUsername("admin2");
     }
 }

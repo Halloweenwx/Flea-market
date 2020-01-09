@@ -27,6 +27,7 @@ import java.util.List;
 
 import static com.tet.fleamarket.util.status.AddStatus.ADD_SUCCESS;
 import static com.tet.fleamarket.util.status.AddStatus.NAME_EXISTS;
+import static com.tet.fleamarket.util.status.DeleteStatus.DELETE_SUCCESS;
 import static com.tet.fleamarket.util.status.FetchStatus.*;
 
 /**
@@ -53,13 +54,12 @@ public class ItemController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     *
-     * @param pageNum 第几页
+     * @param pageNum  第几页
      * @param pageSize 一页几个
-     * @param query 查询关键词
-     * @param isIdle 是否为idle
-     * @param lprice 价格左边界
-     * @param rprice 价格右边界
+     * @param query    查询关键词
+     * @param isIdle   是否为idle
+     * @param lprice   价格左边界
+     * @param rprice   价格右边界
      * @param category 分类
      * @return
      */
@@ -70,37 +70,43 @@ public class ItemController {
                              @RequestParam(name = "isIdle", required = false, defaultValue = "true") Boolean isIdle,
                              @RequestParam(name = "lprice", required = false, defaultValue = "0") Double lprice,
                              @RequestParam(name = "rprice", required = false, defaultValue = "99999") Double rprice,
-                             @RequestParam(name = "category", required = false, defaultValue = "%") String category
-                             ){
+                             @RequestParam(name = "category", required = false, defaultValue = "") String category
+    ) {
         Page<IdleItem> idleItems = null;
         Page<DemandItem> demandItems = null;
         Sort sort = new Sort(Sort.Direction.DESC, "iid");
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
-        if(isIdle){
+        if (isIdle) {
 //            idleItems = idleItemDao.findByNameContainingAndCategory_EnCategory(query,category,pageable);
-            idleItems = idleItemDao.findByNameContainingAndCategory_EnCategoryAndStartPriceBetween(query,category,lprice,rprice,pageable);
-            for (IdleItem idleItem : idleItems){
+            if("".equals(category)) {
+                idleItems = idleItemDao.findByNameContainingAndStartPriceBetween(query, lprice, rprice, pageable);
+            }else{
+                idleItems = idleItemDao.findByNameContainingAndCategory_EnCategoryAndStartPriceBetween(query, category, lprice, rprice, pageable);
+            }
+            for (IdleItem idleItem : idleItems) {
                 try {
                     itemService.addPicUrl(idleItem);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            return new Result(FETCH_SUCCESS,idleItems);
-        }else{
-            demandItems = demandItemDao.findByNameContainingAndCategory_EnCategoryContainingAndLowestPriceGreaterThanEqualAndHighestPriceLessThanEqual(query,category,lprice,rprice,pageable);
-            for (DemandItem demandItem : demandItems){
+            return new Result(FETCH_SUCCESS, idleItems);
+        } else {
+            demandItems = demandItemDao.findByNameContainingAndCategory_EnCategoryContainingAndLowestPriceGreaterThanEqualAndHighestPriceLessThanEqual(query, category, lprice, rprice, pageable);
+            for (DemandItem demandItem : demandItems) {
                 try {
                     itemService.addPicUrl(demandItem);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            return new Result(FETCH_SUCCESS,demandItems);
+            return new Result(FETCH_SUCCESS, demandItems);
         }
     }
+
     /**
      * 首页请求物品
+     *
      * @param type
      * @return
      */
@@ -111,22 +117,22 @@ public class ItemController {
         List<DemandItem> demandItems = new ArrayList<>();
         if ("idle".equals(type)) {
             idleItems = idleItemDao.findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc("on");
-            for(IdleItem idleItem:idleItems){
+            for (IdleItem idleItem : idleItems) {
                 try {
                     itemService.addPicUrl(idleItem);
                     status = FETCH_SUCCESS;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
         } else if ("demand".equals(type)) {
             demandItems = demandItemDao.findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc("on");
-            for(DemandItem demandItem:demandItems) {
+            for (DemandItem demandItem : demandItems) {
                 try {
                     itemService.addPicUrl(demandItem);
                     status = FETCH_SUCCESS;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
 
@@ -155,7 +161,7 @@ public class ItemController {
 
     @TokenRequired
     @PostMapping("/item/idle/add")
-    public Result add(HttpServletRequest httpServletRequest, @RequestBody() IdleItem itemToAdd) {
+    public Result add(HttpServletRequest httpServletRequest, @PathVariable() IdleItem itemToAdd) {
         String token = httpServletRequest.getHeader("Authorization");
         Customer customer = new Customer(tokenService.getUserFromToken(token));
         itemToAdd.setBelong(customer);
@@ -176,6 +182,29 @@ public class ItemController {
         }
         return new Result(status, res);
     }
+
+    @TokenRequired
+    @DeleteMapping("/item/{type}/delete/{iid}")
+    public Result del(HttpServletRequest httpServletRequest, @PathVariable("type") String type, @PathVariable("iid") String iid) {
+        String token = httpServletRequest.getHeader("Authorization");
+        Customer customer = new Customer(tokenService.getUserFromToken(token));
+        Status status = BAD_REQUEST;
+        try {
+            if ("idle".equals(type)) {
+                IdleItem idleItemInBase = idleItemDao.findByIid(iid);
+                idleItemDao.delete(idleItemInBase);
+            }else if("demand".equals(type)){
+                DemandItem demandItemInBase = demandItemDao.findByIid(iid);
+                demandItemDao.delete(demandItemInBase);
+            }
+            status = DELETE_SUCCESS;
+        } catch (Exception e) {
+            status = BAD_REQUEST;
+        }
+
+        return new Result(status);
+    }
+
 
     @TokenRequired
     @PostMapping("/item/demand/add")
@@ -239,6 +268,7 @@ public class ItemController {
 
     /**
      * 个人主页请求物品
+     *
      * @param httpServletRequest
      * @param pageNum
      * @param pageSize
@@ -262,15 +292,15 @@ public class ItemController {
             Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
             if ("idle".equals(type)) {
                 idleItemPage = idleItemDao.findByBelong_Uid(customer.getUid(), pageable);
-                for (IdleItem item:idleItemPage.getContent()){
-                    for (Picture pic:item.getPictures()){
+                for (IdleItem item : idleItemPage.getContent()) {
+                    for (Picture pic : item.getPictures()) {
                         pic.setUrl(pictureOss.findByPid(pic.getPid()).getUrl());
                     }
                 }
             } else if ("demand".equals(type)) {
                 demandItemPage = demandItemDao.findByBelong_Uid(customer.getUid(), pageable);
-                for (DemandItem item:demandItemPage.getContent()){
-                    for (Picture pic:item.getPictures()){
+                for (DemandItem item : demandItemPage.getContent()) {
+                    for (Picture pic : item.getPictures()) {
                         pic.setUrl(pictureOss.findByPid(pic.getPid()).getUrl());
                     }
                 }

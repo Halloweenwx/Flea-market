@@ -24,7 +24,7 @@
               </router-link>
             </div>
             <div class="items-item-info">
-              <p>{{ item.description }}</p>
+              <p>{{ item.name }}</p>
               <p>
                 <span class="items-price text-danger">
                   <Icon type="social-yen"></Icon>
@@ -54,11 +54,11 @@
           <div class="items-item" v-for="(item, index) in buyList" :key="index">
             <div class="items-item-img">
               <router-link to="/detail">
-                <img :src="item.img" />
+                <img :src="item.pictures[0].url" />
               </router-link>
             </div>
             <div class="items-item-info">
-              <p>{{ item.intro }}</p>
+              <p>{{ item.name }}</p>
               <p>
                 <span class="items-price text-danger">
                   <Icon type="social-yen"></Icon>

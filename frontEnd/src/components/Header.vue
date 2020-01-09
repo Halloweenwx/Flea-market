@@ -6,6 +6,7 @@
         <ul>
           <li>TET欢迎您！</li>
           <li>
+            <router-link to="/login">{{this.jwtDecode}}</router-link>|
             <router-link to="/login">请登录</router-link>|
             <router-link to="/register" class="style-red">免费注册</router-link>
           </li>
@@ -32,9 +33,18 @@
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode'
 export default {
   data() {
-    return {};
+    return {
+      jwtDecode:{}
+    };
+  },
+  methods:{
+    created() {
+      this.jwtDecode = VueJwtDecode.decode(window.sessionStorage.getItem('token'));
+      console.log(this.jwtDecode);
+    }
   }
 };
 </script>

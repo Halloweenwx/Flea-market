@@ -37,11 +37,7 @@ export default {
   data() {
     return {
       // 登陆表单的数据绑定对象
-      loginForm: {
-        username: "admin",
-        password: "123456",
-        isCustomer: false
-      },
+      loginForm: {},
       // 表单的验证规则对象
       loginFormRules: {
         username: [

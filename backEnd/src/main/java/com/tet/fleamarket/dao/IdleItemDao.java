@@ -33,6 +33,6 @@ public interface IdleItemDao extends JpaRepository<IdleItem, String> {
     List<IdleItem> findTop5ByItemStatus_EnStatusOrderByCreateTimeDesc(String status);
 
     Page<IdleItem> findByNameContaining(String keyword, Pageable pageable);
-    Page<IdleItem> findByNameContainingAndCategory_EnCategory(String keyword, String category, Pageable pageable);
+    Page<IdleItem> findByNameContainingAndStartPriceBetween(String keyword,double lprice,double rprice, Pageable pageable);
     Page<IdleItem> findByNameContainingAndCategory_EnCategoryAndStartPriceBetween(String keyword, String category,double lprice,double rprice,Pageable pageable);
 }

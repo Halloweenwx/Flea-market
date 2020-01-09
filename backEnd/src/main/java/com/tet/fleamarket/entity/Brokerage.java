@@ -31,10 +31,10 @@ public class Brokerage {
     private Item item;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({@JoinColumn(name="req_uid", referencedColumnName="uid")})
-    private User requester;
+    private Customer requester;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({@JoinColumn(name="res_uid", referencedColumnName="uid")})
-    private User responser;
+    private Customer responser;
     @Column(columnDefinition = "timestamp")
     @ColumnDefault("CURRENT_TIMESTAMP")
     private Timestamp finishTime;

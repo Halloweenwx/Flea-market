@@ -1,0 +1,45 @@
+# server
+server:
+  port: 8080
+
+spring:
+#  thymeleaf:
+#    mode: HTML
+#    encoding: UTF-8
+#    servlet:
+#      content-type: text/html
+#    cache:
+#      false
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  #dabtabase
+  datasource:
+#    https://www.jianshu.com/p/7e9247c0b81a
+    url: jdbc:mysql://101.200.150.13:3306/test?maxPoolSize=256&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: tet
+    password: mysqltet
+    hikari.max-lifetime: 30000 #30000秒
+  jpa:
+    properties:
+      hibernate:
+#        需要设置为57才能实现外键约束
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        discriminator:
+          ignore_explicit_for_joined: true
+        hbm2ddl:
+          auto: update
+
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    show-sql: true
+
+# values
+values:
+  service:
+    UserService:
+      saltLen: 10
+    tokenService:
+      expireSecond: 172800
+

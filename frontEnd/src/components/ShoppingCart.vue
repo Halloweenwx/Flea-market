@@ -28,18 +28,10 @@
         <iInput type="text" v-model="row.count" @on-change="update(row, index)"></iInput>
       </template>-->
     </Table>
-    <div class="remarks-container">
-      <h3>备注</h3>
-      <iInput v-model="remarks" size="large" placeholder="在这里填写备注信息" class="remarks-input"></iInput>
-    </div>
-    <div class="invoices-container">
-      <h3>发票信息</h3>
-      <p>该商品不支持开发票</p>
-    </div>
     <div class="pay-container">
       <div class="pay-box">
         <p>
-          <span>应付总额：</span>
+          <span>应付总额（不含中介费）：</span>
           <span class="money">
             <Icon type="logo-yen"></Icon>
             {{ this.totalPrice.toFixed(2) }}
@@ -47,7 +39,7 @@
         </p>
         <div class="pay-btn">
           <router-link to="/pay">
-            <Button type="error" size="large" @click="submit">支付订单</Button>
+            <Button type="error" size="large" @click="submit" :disabled="this.payDisable">支付订单</Button>
           </router-link>
         </div>
       </div>
@@ -64,6 +56,7 @@ export default {
   },
   data() {
     return {
+      payDisable:true,
       goodsCheckList: [],
       columns: [
         {
@@ -76,15 +69,21 @@ export default {
           key: "img",
           width: 86,
           render: (h, params) => {
-            // console.log(params);
+            console.log(params);
             return h("div", [
               h("img", {
                 attrs: {
-                  src: params.row.img
+                  src: params.row.img,
+                  width: 86
                 }
               })
             ]);
           },
+          align: "center"
+        },
+        {
+          title: "名称",
+          key: "name",
           align: "center"
         },
         {
@@ -99,7 +98,7 @@ export default {
           align: "center"
         },
         {
-          title: "商家名称",
+          title: "当前所有者",
           key: "owner",
           width: 100,
           align: "center"
@@ -180,6 +179,7 @@ export default {
           // cnt += 1;
         } else this.shoppingCartTable[i].isSelected = false;
       }
+      this.payDisable = this.totalPrice === 0;
       // this.changeCartCount(cnt);
     },
     async update(row, index) {
@@ -215,7 +215,7 @@ export default {
         }
       }
       console.log(buyItems);
-      const { data: res } = await this.$http.post("cart/buy", buyItems);
+      const { data: res } = await this.$http.post("/cart/buy", buyItems);
       if (res.code !== 200) return this.$Message.error("提交订单失败");
       this.$Message.success("提交订单成功");
     }

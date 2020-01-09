@@ -11,7 +11,7 @@
       <!-- 搜索与添加区 -->
       <Row :gutter="50">
         <iCol :span="7">
-          <iInput placeholder="请输入内容" v-model="queryInfo.query" @on-clear="getItemList">
+          <iInput placeholder="搜索商品名" v-model="queryInfo.query" @on-clear="getItemList">
             <iButton slot="append" icon="ios-search-outline" @click="getItemList"></iButton>
           </iInput>
         </iCol>
@@ -93,10 +93,10 @@
           <iInput v-model="addForm.name" clearable></iInput>
         </FormItem>
         <FormItem label="物品最低价格" prop="lowestPrice">
-          <iInput v-model="addForm.lowestPrice" clearable></iInput>
+          <InputNumber :max="this.addForm.highestPrice" v-model="addForm.lowestPrice" clearable/>
         </FormItem>
         <FormItem label="物品最高价格" prop="highestPrice">
-          <iInput v-model="addForm.highestPrice"></iInput>
+          <InputNumber :min="this.addForm.lowestPrice" v-model="addForm.highestPrice"/>
         </FormItem>
         <FormItem label="物品描述" prop="description">
           <iInput v-model="addForm.description" clearable></iInput>
@@ -107,8 +107,9 @@
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//192.168.137.196:8080/picture/upload"
+            action= "http://10.128.205.27:8080/picture/upload"
             :on-success="upLoadImg"
+            
           >
             <div style="padding: 20px 0">
               <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -197,10 +198,10 @@
           <iInput v-model="editForm.name"></iInput>
         </FormItem>
         <FormItem label="物品最低价格" prop="lowestPrice">
-          <iInput v-model="editForm.lowestPrice"></iInput>
+          <input-number :max="this.addForm.highestPrice" v-model="editForm.lowestPrice"/>
         </FormItem>
         <FormItem label="物品最高价格" prop="highestPrice">
-          <iInput v-model="editForm.highestPrice"></iInput>
+          <input-number :min="this.addForm.lowestPrice" v-model="editForm.highestPrice"/>
         </FormItem>
         <FormItem label="物品描述" prop="description">
           <iInput v-model="editForm.description"></iInput>
@@ -211,7 +212,7 @@
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//192.168.137.196:8080/picture/upload"
+            action= "http://10.128.205.27:8080/picture/upload"
             @on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
@@ -243,13 +244,13 @@ export default {
       },
       itemList: [
         {
-          category: "电子类",
-          name: "笔记本",
-          lowestPrice: 10,
-          highestPrice: 20,
-          description: "abook",
-          status: "待购",
-          pictures: null
+          // category: "电子类",
+          // name: "笔记本",
+          // lowestPrice: 10,
+          // highestPrice: 20,
+          // description: "abook",
+          // status: "待购",
+          // pictures: null
         }
       ],
       total: 100,
@@ -287,13 +288,13 @@ export default {
       ],
       //   添加的表单数据
       addForm: {
-        category: "电子类",
-        name: "笔记本",
-        lowestPrice: "10",
-        highestPrice: "20",
-        description: "abook",
-        status: "待购",
-        pictures: []
+        // category: "电子类",
+        // name: "笔记本",
+        // lowestPrice: 0,
+        // highestPrice: 0,
+        // description: "abook",
+        // status: "待购",
+        // pictures: []
       },
       //   添加表单的验证规则对象
       addFormRules: {
@@ -303,17 +304,19 @@ export default {
         name: [{ required: true, message: "请输入物品名称", trigger: "blur" }],
         lowestPrice: [
           {
+            type: "number",
             required: true,
             message: "请输入物品的最低求购价格",
             trigger: "blur"
-          }
+          },
         ],
         highestPrice: [
           {
+            type: "number",
             required: true,
             message: "请输入物品的最高求购价格",
             trigger: "blur"
-          }
+          },
         ]
       },
       detailDialogVisible: false,
@@ -321,12 +324,12 @@ export default {
       editDialogVisible: false,
       //   查询到的物品对象
       editForm: {
-        // category: "",
-        // name: "",
-        // lowestPrice: "",
-        // highestPrice: "",
-        // description: "",
-        // photo: ""
+        category: "",
+        name: "",
+        lowestPrice: 0,
+        highestPrice: 0,
+        description: "",
+        pictures: []
       },
       // 修改表单的验证规则对象
       editFormRules: {
@@ -336,6 +339,7 @@ export default {
         name: [{ required: true, message: "请输入物品名称", trigger: "blur" }],
         lowestPrice: [
           {
+            type: "number",
             required: true,
             message: "请输入物品的最低求购价格",
             trigger: "blur"
@@ -343,6 +347,7 @@ export default {
         ],
         highestPrice: [
           {
+            type: "number",
             required: true,
             message: "请输入物品的最高求购价格",
             trigger: "blur"
@@ -351,15 +356,15 @@ export default {
       },
       typeList: [
         {
-          value: "电子类",
+          value: "ele",
           label: "电子类"
         },
         {
-          value: "日常用品类",
+          value: "daily",
           label: "日常用品类"
         },
         {
-          value: "书籍类",
+          value: "book",
           label: "书籍类"
         }
       ]
@@ -375,9 +380,13 @@ export default {
         params: this.queryInfo
       });
       if (res.code !== 200) return this.$message.error("获取用户列表失败!");
+      console.log(res)
+      for(var i in res.data.content){
+        res.data.content[i].category = res.data.content[i].category.cnCategory;
+        res.data.content[i].status = res.data.content[i].itemStatus.cnStatus;
+      }
       this.itemList = res.data.content;
       this.total = res.data.totalPages;
-      // console.log(res)
     },
     // 监听pagesize改变的事件
     handleSizeChange(newSize) {
@@ -406,7 +415,8 @@ export default {
     addItem() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return;
-        this.addForm.status = "待售";
+        this.addForm.status = "on";
+        console.log(this.addForm)
         const { data: res } = await this.$http.post(
           "item/demand/add",
           this.addForm
@@ -456,10 +466,9 @@ export default {
         this.$message.success("更新成功");
       });
     },
-    delItem(index) {
-      const { data: res } = this.$http.post();
+    async delItem(index) {
+      const { data: res } = await this.$http.delete("/item/demand/delete/"+ this.itemList[index].iid);
       if (res.code !== 200) return this.$Message.error("删除失败");
-
       this.getItemList();
       // this.itemList.splice(index, 1);
       this.$Message.success("删除成功");

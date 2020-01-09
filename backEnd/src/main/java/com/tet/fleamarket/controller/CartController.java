@@ -5,6 +5,7 @@ import com.tet.fleamarket.dao.CartDao;
 import com.tet.fleamarket.dao.IdleItemDao;
 import com.tet.fleamarket.entity.*;
 import com.tet.fleamarket.service.DealService;
+import com.tet.fleamarket.service.ItemService;
 import com.tet.fleamarket.service.TokenService;
 import com.tet.fleamarket.util.Result;
 import com.tet.fleamarket.util.Status;
@@ -40,6 +41,9 @@ public class CartController {
     private DealService dealService;
 
     @Autowired
+    private ItemService itemService;
+
+    @Autowired
     private IdleItemDao idleItemDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,14 +54,18 @@ public class CartController {
         Customer customer = new Customer(tokenService.getUserFromToken(httpServletRequest.getHeader("Authorization")));
         Status status = BAD_REQUEST;
         Cart cart = new Cart();
+        Set<IdleItem> items = null;
         try {
             cart = cartDao.findCartByCustomer_Uid(customer.getUid());
-            Set<IdleItem> items = cart.getIdleItems();
+            items = cart.getIdleItems();
+            for (IdleItem item:items){
+                itemService.addPicUrl(item);
+            }
             status = FETCH_SUCCESS;
         } catch (Exception e) {
             status = BAD_REQUEST;
         }
-        return new Result(status, cart.getIdleItems());
+        return new Result(status, items);
     }
 
     @TokenRequired

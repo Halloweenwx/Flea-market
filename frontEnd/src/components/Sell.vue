@@ -49,6 +49,7 @@
               icon="ios-create-outline"
               size="default"
               class="modify"
+              :disable="!this.itemList[index].canChange"
               @click="showEditDialog(index)"
             ></iButton>
           </Tooltip>
@@ -115,7 +116,7 @@
             multiple
             type="drag"
             :format="['jpg', 'jpeg', 'png']"
-            action="//192.168.137.196:8080/picture/upload"
+            action="//localhost:8080/picture/upload"
             @on-success="upLoadImg"
           >
             <div style="padding: 20px 0">
@@ -257,6 +258,8 @@
 export default {
   data() {
     return {
+
+      canChange:true,
       // 获取物品列表的参数对象
       queryInfo: {
         query: "",
@@ -382,15 +385,15 @@ export default {
       },
       typeList: [
         {
-          value: "电子类",
+          value: "ele",
           label: "电子类"
         },
         {
-          value: "日常用品类",
+          value: "daily",
           label: "日常用品类"
         },
         {
-          value: "书籍类",
+          value: "book",
           label: "书籍类"
         }
       ]
@@ -408,9 +411,15 @@ export default {
       });
 
       if (res.code !== 200) return this.$message.error("获取物品列表失败!");
-
+      for(var i in res.data.content){
+        res.data.content[i].category = res.data.content[i].category.cnCategory;
+        res.data.content[i].status = res.data.content[i].itemStatus.cnStatus;
+        res.data.content[i].canChange = res.data.content[i].itemStatus.enStatus === 'on';
+      }
       this.itemList = res.data.content;
       this.totalPages = res.data.totalPages;
+      console.log(res)
+      console.log(this.itemList)
       // console.log(res);
     },
     // 监听pagesize改变的事件

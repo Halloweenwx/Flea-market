@@ -43,7 +43,7 @@
           <ListItem>
             <ListItemMeta
               avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
-              title="所在城市"
+              title="所在地区"
               :description="userInfo.city"
             />
           </ListItem>
@@ -126,13 +126,7 @@ export default {
 
     return {
       // 用户信息
-      userInfo: {
-        username: "wxl1999",
-        realName: "王晓磊",
-        phone: "18810312968",
-        // email: '123',
-        city: "北京"
-      },
+      userInfo: {},
       // 编辑用户信息
       editForm: {
         username: "wxl1999",
@@ -146,23 +140,13 @@ export default {
       // 编辑对话框是否可见
       editDialogVisable: false,
       formRules: {
-        // username: [
-        //   { required: true, message: '请填写用户名', trigger: 'blur' }
-        // ],
-        // realName: [{ required: true, message: '请填写真实姓名', trigger: 'blur' }],
-        // city: [
-        //   { required: true, message: '请填写您所在的城市', trigger: 'blur' }
-        // ],
-        mobile: [
-          // { required: true, message: '请填写手机号', trigger: 'blur' },
+        phone: [
+          { required: true, message: '请填写手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: "blur" }
         ],
-        // email: [
-        //   { required: true, message: '请填写邮箱', trigger: 'blur' },
-        //   { validator: checkEmail, trigger: 'blur' }
-        // ],
+
         password: [
-          // { required: true, message: '密码不能为空', trigger: 'blur' },
+          { required: true, message: '密码不能为空', trigger: 'blur' },
           {
             type: "string",
             min: 6,
@@ -199,15 +183,15 @@ export default {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return this.$Message.error("更新用户信息失败");
         const { data: res } = await this.$http.post("home/update", {
-          // email: this.editFrom.email,
-          mobile: this.editForm.mobile,
+          phone: this.editForm.phone,
           password: this.editForm.password
         });
         if (res.code !== 200) return this.$message.error(res.msg);
         // 刷新数据列表
         this.getUserInfo();
         // 提示修改成功
-        this.$Message.success("更新用户信息成功");
+        this.$Message.success("修改成功，请重新登录");
+        this.$router.push("/login");
       });
     },
     async getUserInfo() {
@@ -215,6 +199,8 @@ export default {
       if (res.code !== 200) return this.$Message.error(res.msg);
       this.userInfo = this.editForm = res.data;
       this.userInfo.city = this.editForm.city = res.data.city.label;
+      this.$message.success(res.msg)
+      console.log(res.data)
     }
   }
 };

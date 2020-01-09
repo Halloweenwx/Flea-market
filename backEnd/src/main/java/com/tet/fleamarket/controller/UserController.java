@@ -48,7 +48,6 @@ public class UserController {
             } else {
                 loginUser = new Administrator(loginUser);
             }
-
             if (!userService.usernameExists(loginUser.getUsername())) {
                 //用户名不存在
                 status = USER_NOT_FOUND;
@@ -58,13 +57,15 @@ public class UserController {
             } else {
                 //登录成功
                 status = LOGIN_SUCCESS;
-                User userInBase = userService.getUserByUsername(loginUser.getUsername());
-                String token = tokenService.genUserToken(userInBase);
+                Customer CustomerInBase = userService.getCustomerByUsername(loginUser.getUsername());
+                String token = tokenService.genUserToken(CustomerInBase);
 
 //                ResponseCookie cookie = ResponseCookie.from("token", token).path("/").sameSite(null).secure(true).build();
 //                response.addHeader("Set-Cookie", cookie.toString());
 //                response.addHeader("Authorization", token);
                 data.put("token", token);
+                data.put("username",loginUser.getUsername());
+                data.put("userType",loginUser.getClass().toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,9 +120,9 @@ public class UserController {
         String token = httpServletRequest.getHeader("Authorization");
         User user = tokenService.getUserFromToken(token);
         Status status;
-        User userInBase = userService.getUserByUid(user.getUid());
+        Customer customerInBase = userService.getCustomerByUid(user.getUid());
         status = FETCH_SUCCESS;
-        return new Result(status, userInBase);
+        return new Result(status, customerInBase);
     }
 
     @TokenRequired
@@ -129,11 +130,11 @@ public class UserController {
     public Result update(HttpServletRequest httpServletRequest, @RequestBody() User updateUserInfo) {
         String token = httpServletRequest.getHeader("Authorization");
         User user = tokenService.getUserFromToken(token);
-
         Status status = NO_UPDATE;
         updateUserInfo.setUid(user.getUid());
-        if (userService.update(updateUserInfo)) {
-            status = UPDATE_SUCCESS;
+
+        if(userService.update(updateUserInfo)){
+            status = SUCCESS;
         }
 
         return new Result(status);

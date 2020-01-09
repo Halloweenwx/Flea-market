@@ -80,7 +80,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             User userInBase = null;
             try {
                 if (pass && uid != null) {
-                    userInBase = userService.getUserByUid(uid);
+                    userInBase = userService.getCustomerByUid(uid);
                     if (!userService.userIsLegal(userInBase)) {
                         status = USER_NOT_FOUND;
                         pass = false;
@@ -118,7 +118,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
         }
         return pass;
-
     }
 
 

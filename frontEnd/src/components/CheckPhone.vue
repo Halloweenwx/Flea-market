@@ -33,7 +33,7 @@ export default {
     return {
       formValidate: {
         phone: "13852897754",
-        checkNum: "1234"
+        checkNum: ""
       },
       checkNum: null,
       ruleValidate: {
@@ -66,6 +66,7 @@ export default {
         duration: 6,
         closable: true
       });
+      this.formValidate.checkNum = res.data.checkNum;
     },
     handleSubmit(name) {
       // 提交验证

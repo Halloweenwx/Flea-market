@@ -57,56 +57,7 @@ export default {
       }
     };
     return {
-      cityList: [
-        {
-          value: "beijing",
-          label: "北京",
-          children: [
-            {
-              value: "gugong",
-              label: "故宫"
-            },
-            {
-              value: "tiantan",
-              label: "天坛"
-            },
-            {
-              value: "wangfujing",
-              label: "王府井"
-            }
-          ]
-        },
-        {
-          value: "jiangsu",
-          label: "江苏",
-          children: [
-            {
-              value: "nanjing",
-              label: "南京",
-              children: [
-                {
-                  value: "fuzimiao",
-                  label: "夫子庙"
-                }
-              ]
-            },
-            {
-              value: "suzhou",
-              label: "苏州",
-              children: [
-                {
-                  value: "zhuozhengyuan",
-                  label: "拙政园"
-                },
-                {
-                  value: "shizilin",
-                  label: "狮子林"
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      cityList: [],
       formValidate: {
         username: "wxl1999",
         name: "王晓磊",
@@ -171,7 +122,7 @@ export default {
           const userInfo = {
             username: this.formValidate.username,
             password: this.formValidate.password,
-            realname: this.formValidate.name,
+            realName: this.formValidate.name,
             city: this.formValidate.city[this.formValidate.city.length - 1],
             phone: this.$route.query.phone,
             isCustomer: true

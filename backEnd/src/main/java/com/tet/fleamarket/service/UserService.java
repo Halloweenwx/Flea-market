@@ -1,7 +1,8 @@
 package com.tet.fleamarket.service;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.tet.fleamarket.dao.CartDao;
-import com.tet.fleamarket.dao.UserDao;
+import com.tet.fleamarket.dao.CustomerDao;
 import com.tet.fleamarket.entity.Cart;
 import com.tet.fleamarket.entity.Customer;
 import com.tet.fleamarket.entity.User;
@@ -22,7 +23,7 @@ import static com.tet.fleamarket.util.Encryption.randomString;
 @Service
 public class UserService {
     @Autowired
-    private UserDao userDao;
+    private CustomerDao customerDao;
 
     @Autowired
     private CartDao cartDao;
@@ -32,20 +33,20 @@ public class UserService {
     @Value("${values.service.UserService.saltLen}")
     private int saltLen;
 
-    public User getUserByUsername(String username) {
+    public Customer getCustomerByUsername(String username) {
         if (!username.isEmpty()) {
-            return userDao.findByUsername(username);
+            return customerDao.findByUsername(username);
         } else {
-            return new User();
+            return new Customer();
         }
     }
 
-    public User getUserByUid(String uid) {
+    public Customer getCustomerByUid(String uid) {
         if (!uid.isEmpty()) {
-            System.out.println(userDao.findByUid(uid));
-            return userDao.findByUid(uid);
+            System.out.println(customerDao.findByUid(uid));
+            return customerDao.findByUid(uid);
         } else {
-            return new User();
+            return new Customer();
         }
     }
 
@@ -53,11 +54,11 @@ public class UserService {
         if (username.isEmpty()) {
             return false;
         }
-        User userInDataBase = getUserByUsername(username);
-        if (userIsLegal(userInDataBase)) {
-            logger.info(userInDataBase.getUsername());
+        Customer customerInDataBase = getCustomerByUsername(username);
+        if (userIsLegal(customerInDataBase)) {
+            logger.info(customerInDataBase.getUsername());
         }
-        return userIsLegal(userInDataBase);
+        return userIsLegal(customerInDataBase);
     }
 
     public Boolean userIsLegal(User user) {
@@ -70,7 +71,7 @@ public class UserService {
     }
 
     public Boolean checkPassword(User userToCheck) {
-        User userInBase = getUserByUsername(userToCheck.getUsername());
+        User userInBase = getCustomerByUsername(userToCheck.getUsername());
         if (userIsLegal(userInBase)) {
             String keyToCheck = userToCheck.getPassword() + userInBase.getSalt();
             String md5 = getMD5(keyToCheck);
@@ -81,10 +82,10 @@ public class UserService {
         return false;
     }
 
-    public String addCustomerAndCart(User userToAdd) {
-        userToAdd.setSalt(randomString(saltLen));
-        userToAdd.setPassword(getMD5(userToAdd.getPassword() + userToAdd.getSalt()));
-        Customer customer = new Customer(userDao.save(userToAdd));
+    public String addCustomerAndCart(Customer customerToAdd) {
+        customerToAdd.setSalt(randomString(saltLen));
+        customerToAdd.setPassword(getMD5(customerToAdd.getPassword() + customerToAdd.getSalt()));
+        Customer customer = new Customer(customerDao.save(customerToAdd));
         Cart cart = new Cart();
         cart.setCustomer(customer);
         cartDao.save(cart);
@@ -92,24 +93,24 @@ public class UserService {
     }
 
     public Boolean update(User updateInfo) {
-        boolean updated = false;
+        Boolean updated = false;
+        Customer userToUpdate = getCustomerByUid(updateInfo.getUid());
         try {
-            User userToUpdate = getUserByUid(updateInfo.getUid());
-            if (!updateInfo.getUsername().equals(userToUpdate.getUsername())) {
-                userToUpdate.setUsername(updateInfo.getUsername());
-                updated = true;
-            } else if (updateInfo.getPhone() != null && !userToUpdate.getPhone().equals(updateInfo.getPhone())) {
+            if (updateInfo.getPhone() != null) {
                 userToUpdate.setPhone(updateInfo.getPhone());
                 updated = true;
-            } else if (updateInfo.getCity() != null && userToUpdate.getCity() != updateInfo.getCity()) {
-                userToUpdate.setCity(updateInfo.getCity());
-            } else if (updateInfo.getPassword() != null) {
-                userToUpdate.setSalt(randomString(saltLen));
-                userToUpdate.setPassword(getMD5(userToUpdate.getPassword() + userToUpdate.getSalt()));
             }
-            userDao.save(userToUpdate);
+            if (updateInfo.getPassword() != null) {
+                userToUpdate.setSalt(randomString(saltLen));
+                userToUpdate.setPassword(getMD5(updateInfo.getPassword() + userToUpdate.getSalt()));
+                updated = true;
+            }
+            if(updated) {
+                customerDao.save(userToUpdate);
+            }
         } catch (Exception e) {
             logger.info("update error" + updateInfo.toString());
+            updated = false;
         }
         return updated;
     }

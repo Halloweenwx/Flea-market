@@ -1,6 +1,7 @@
 package com.tet.fleamarket.dao;
 
 
+import com.tet.fleamarket.entity.Customer;
 import com.tet.fleamarket.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

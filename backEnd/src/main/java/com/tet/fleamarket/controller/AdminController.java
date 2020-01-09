@@ -1,5 +1,6 @@
 package com.tet.fleamarket.controller;
 
+import com.tet.fleamarket.dao.CustomerDao;
 import com.tet.fleamarket.dao.UserDao;
 import com.tet.fleamarket.entity.User;
 import com.tet.fleamarket.util.Result;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navi></Navi>
+    <Navi v-on:resultChanged="updateResult"></Navi>
     <!-- 筛选 -->
     <div class="item-class-show w">
       <!-- <Row class="item-class-group" v-for="(items, index) in tagsInfo" :key="index">
@@ -58,24 +58,27 @@
             <div class="goods-show-img" v-if="item.pictures">
               <img :src="item.pictures[0].url" />
             </div>
+            <div class="goods-show-name">
+              <span>{{ item.name }}</span>
+            </div>
             <div class="goods-show-price">
-              <span>
+              <span v-if="item.startPrice!==undefined">
                 <Icon type="logo-yen" class="number"></Icon>
                 <span class="number">{{ item.startPrice }}</span>
+              </span>
+              <span v-else>
+                <Icon type="logo-yen" class="number"></Icon>
+                <span class="number">{{ item.lowestPrice }}（心理价）</span>
               </span>
             </div>
             <div class="goods-show-detail">
               <span>{{ item.description }}</span>
             </div>
-            <!-- <div class="goods-show-num">
-              已有
-              <span>{{ item.remarks }}</span>人评价
-            </div>-->
-            <div class="goods-show-seller" v-if="item.belong.username">
-              <span>{{ item.belong.username }}</span>
+            <div class="goods-show-seller" v-if="item.belong">
+              <span>所有者：{{ item.belong.username }}</span>
             </div>
             <div class="action">
-              <Button type="info" @click="viewDetail" class="goods-detail">查看详情</Button>
+              <Button type="info" @click="viewDetail(index)" class="goods-detail">查看详情</Button>
               <Button type="error" @click="addToCart(index)" class="goods-add">加入购物车</Button>
             </div>
           </div>
@@ -164,6 +167,7 @@ export default {
         value: ["ele", "daily", "book"]
       },
       searchInfo: {
+        query:"",
         category: "",
         isIdle: true,
         lprice: "",
@@ -195,29 +199,36 @@ export default {
     };
   },
   methods: {
+    updateResult(list){
+      this.itemList = list;
+      console.log(list)
+    },
     // ...mapActions(["loadSearchList"]),
     async search(key, index) {
+      console.log(this.searchInfo.query)
       if (key === "type") this.searchInfo.category = this.tags.value[index];
       console.log(this.searchInfo);
-      const { data: res } = await this.$http.get("fore/search", {
+      const { data: res } = await this.$http.get("/fore/search", {
         params: this.searchInfo
       });
       console.log(res);
       if (res.code !== 200) return this.$Message.error(res.msg);
-
       this.itemList = res.data.content;
+      console.log(this.itemList);
     },
+
     selectBuyOrSell(isBuy, index) {
       this.isSelected = [false, false];
       this.isSelected[index] = true;
       this.searchInfo.isIdle = isBuy;
       this.search();
     },
-    viewDetail() {
+    viewDetail(index) {
+      this.detail = this.itemList[index];
       this.detailVisiable = true;
     },
     async addToCart(index) {
-      const { data: res } = await this.$http.post("cart/item/add", {
+      const { data: res } = await this.$http.post("/cart/item/add", {
         iid: this.itemList[index].iid
       });
       console.log(res);
@@ -229,7 +240,7 @@ export default {
   //   ...mapState(["itemList"])
   // },
   created() {
-    this.search();
+    this.itemList = this.$route.query.list;
   },
   components: {
     Navi
@@ -340,6 +351,10 @@ export default {
   height: 160px;
   margin: 0px auto;
   overflow: hidden;
+}
+.goods-show-name {
+  font-size: 20px;
+  margin: 6px 0px;
 }
 .goods-show-detail {
   font-size: 12px;

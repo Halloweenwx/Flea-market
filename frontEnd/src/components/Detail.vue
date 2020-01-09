@@ -1,5 +1,59 @@
 <template>
-  <div>
+<!-- 详情对话框 -->
+    <Modal v-model="detailVisiable" title="商品详情">
+      <List>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="卖家用户名"
+            :description="detail.username"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品类型"
+            :description="detail.category"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品名称"
+            :description="detail.name"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品最低价格"
+            :description="detail.lowestPrice"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="是否一口价"
+            :description="detail.priceFixed"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="竞价结束日期"
+            :description="detail.endDate"
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemMeta
+            avatar="https://dev-file.iviewui.com/userinfoPDvn9gKWYihR24SpgC319vXY8qniCqj4/avatar"
+            title="物品描述"
+            :description="detail.description"
+          />
+        </ListItem>
+      </List>
+    </Modal>
+  <!-- <div>
     <Navi></Navi>
     <Row class="w" type="flex" align="middle">
       <iCol span="12">
@@ -40,9 +94,10 @@
         </div>
       </iCol>
     </Row>
-  </div>
+  </div> -->
 </template>
 
+<!--
 <script>
 import Navi from "./Navi.vue";
 export default {
@@ -87,3 +142,4 @@ export default {
   text-align: right;
 }
 </style>
+-->

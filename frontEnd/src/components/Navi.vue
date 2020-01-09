@@ -10,21 +10,16 @@
       </div>
       <!-- search -->
       <div class="search">
-        <iInput
+        <Input 
+          enter-button="搜索"
           placeholder="请输入内容"
           class="box"
-          clearable
+          v-model="searchInfo.query"
           search
           auto-complete
-          @on-search="searchItems"
-        >
-          <!-- <iButton
-              slot="append"
-              icon="ios-search-outline"
-              @click="getItemList"
-            >
-          </iButton>-->
-        </iInput>
+          @on-search="search"
+        />
+        
         <!-- <input type="text" class="text" value="请搜索" />
         <button class="btn">搜索</button>-->
       </div>
@@ -42,7 +37,7 @@
           <i class="car"></i>
           我的购物车
           <i class="arrow"></i>
-          <i class="count">{{this.cartCount}}</i>
+          <!-- <i class="count">{{this.cartCount}}</i> -->
         </a>
       </div>
     </div>
@@ -52,9 +47,46 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  data(){
+    return{
+      searchInfo:{
+        query:''
+      },
+      itemList:[],
+      cartCount:0
+    }
+  },
   methods: {
-    searchItems(value) {
-      this.$router.push("/search");
+    changeResult() {
+      console.log(this.itemList)
+      this.$emit("resultChanged",this.itemList);
+    },
+    async getCartCnt(){
+      const { data: res } = await this.$http.get("/cart/num");
+      if (res.code !== 200) return this.$Message.error(res.msg);
+      console.log(res.data)
+      this.cartCount = res.data.cartNum;
+    },
+    async search(key, index) {
+      if (key === "type") this.searchInfo.category = this.tags.value[index];
+      const { data: res } = await this.$http.get("/fore/search", {
+        params: this.searchInfo
+      });
+      console.log(res);
+      if (res.code !== 200) return this.$Message.error(res.msg);
+      this.itemList = res.data.content;
+      this.changeResult();
+      if (this.$route.path !== "/search"){
+        this.$router.push({
+          path:"/search",
+          query:{
+            list: this.itemList
+          }
+        })
+      }
+    },
+    mounted() {
+      this.getCartCnt();
     }
   },
   computed: {
